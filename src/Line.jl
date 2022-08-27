@@ -6,7 +6,6 @@ struct Line{T <: Real}
     p2::Point{T}
 end
 
-Line{T}(p1::Point, p2::Point) where T = Line{T}(Point{T}(p1), Point{T}(p2))
 
 function Line(p1::Point, p2::Point)
     (x, y) = Base.promote(p1.x, p2.x)
