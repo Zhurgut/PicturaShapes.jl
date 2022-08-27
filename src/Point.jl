@@ -1,4 +1,5 @@
-using LinearAlgebra: norm, dot, normalize
+
+# import LinearAlgebra: norm, dot, normalize
 
 struct Point{T <: Real}
     x::T
@@ -20,14 +21,14 @@ Base.:(-)(p::Point) = Point(-p.x, -p.y)
 Base.:(-)(p::Point, p2::Point) = p + (-p2)
 Base.:(*)(s::Real, p::Point)   = Point(s * p.x, s * p.y)
 # Base.:(*)(p1::Real, p2::Point)   = Point(p1.x * p2.x, p1.y * p2.y)
-Base.LinearAlgebra.dot(a::Point, b::Point) = a.x*b.x + a.y*b.y
+LinearAlgebra.dot(a::Point, b::Point) = a.x*b.x + a.y*b.y
 
 
-dist(p1::Point, p2::Point) = norm((p1.x - p2.x, p1.y - p2.y))
+dist(p1::Point, p2::Point) = LinearAlgebra.norm((p1.x - p2.x, p1.y - p2.y))
 
 magnitude(p1::Point) = dist(p1, Point(0,0))
 
-normalize(p::Point) = (1/magnitude(p))*p
+LinearAlgebra.normalize(p::Point) = (1/magnitude(p))*p
 
 scale(p::Point, xs, ys) = Point(p.x * xs, p.y * ys)
 

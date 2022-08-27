@@ -4,9 +4,10 @@ include("Point.jl")
 export Point, dist, magnitude, scale, rotate
 
 include("Line.jl")
+export Line
 
 include("Segment.jl")
-export Line
+
 
 
 include("Joint.jl")
