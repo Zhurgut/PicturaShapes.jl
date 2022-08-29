@@ -6,7 +6,8 @@ export Point, dist, magnitude, scale, rotate
 include("Line.jl")
 export Line
 
-# include("Segment.jl")
+include("Segment.jl")
+export Segment
 #
 #
 #
