@@ -1,10 +1,11 @@
 module Shapes
 
-dist(l,p::Point) = dist(p,l)
-Base.intersect(l,p) = intersect(p,l)
 
 include("Point.jl")
 export Point, dist, magnitude, scale, rotate
+
+dist(l,p::Point) = dist(p,l)
+Base.intersect(l,p) = intersect(p,l)
 
 include("Line.jl")
 export Line
