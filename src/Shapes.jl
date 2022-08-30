@@ -1,5 +1,8 @@
 module Shapes
 
+dist(l,p::Point) = dist(p,l)
+Base.intersect(l,p) = intersect(p,l)
+
 include("Point.jl")
 export Point, dist, magnitude, scale, rotate
 
@@ -8,6 +11,9 @@ export Line
 
 include("Segment.jl")
 export Segment
+
+include("Circle.jl")
+export Circle
 #
 #
 #

@@ -7,7 +7,6 @@ end
 unit_circle() = Circle(Point(0,0), 1)
 
 
-dist(c::Circle, p::Point) = dist(p, c)
 function dist(p::Point, c::Circle)
     d = dist(p, c.center)
     if d < c.radius return 0 end
@@ -16,14 +15,6 @@ end
 
 # returns nothing, a point or a line!
 function intersect_with_unit_circle(l::Line)
-    if l.p1 == l.p2 # degenerate line...
-        if dist(l.p1, Point(0,0)) == 0
-            return l.p1 end # point inside circle
-        else
-            return nothing # point outside circle
-        end
-    end
-
     L = length(l)
     d = l.p2 - l.p1
     σ = (l.p1 ⋅ d) / (d ⋅ d)
@@ -36,7 +27,7 @@ function intersect_with_unit_circle(l::Line)
         σ⁻ = (σL - distp) / L
         p⁺ = l.p1 + σ⁺*(l.p1-l.p2)
         p⁻ = l.p1 + σ⁻*(l.p1-l.p2)
-        return Line(p⁺, p⁻)
+        return Segment(p⁺, p⁻)
     elseif dst == 1 # tangential connection, 1 intersection point
         return p
     else # no intersection

@@ -16,6 +16,8 @@ Point{T}(p::Point) where T = Point{T}(T(p.x), T(p.y))
 
 Base.convert(::Type{Point{T}}, p::Point) where T = Point{T}(p)
 
+Base.:(==)(p1::Point, p2::Point) = (p1.x == p2.x && p1.y == p2.y)
+
 Base.:(+)(p::Point, p2::Point) = Point(p.x + p2.x, p.y + p2.y)
 Base.:(-)(p::Point) = Point(-p.x, -p.y)
 Base.:(-)(p::Point, p2::Point) = p + (-p2)
