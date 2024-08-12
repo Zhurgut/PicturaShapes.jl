@@ -19,10 +19,11 @@ rotate(p::Point{T}, θ) where T = Point(cos(θ)*p.x - sin(θ)*p.y, sin(θ)*p.x +
 shift(p::Point{T}, dx, dy) where T = Point(p.x + dx, p.y + dy)
 scale(p::Point{T}, sx, sy) where T = Point(sx * p.x, sy * p.y)
 
-Base.in(p::Point{T}, s::Point{S}) where {T, S} = p == s
-
 
 align(p::Point{T}) where T = Point(rounded(p.x), rounded(p.y))
+
+
+Base.in(p::Point{T}, s::Point{S}) where {T, S} = p == s
 
 
 function Base.intersect(p1::Point{T}, p2::Point{S}) where {T, S}

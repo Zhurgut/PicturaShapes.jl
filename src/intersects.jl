@@ -1,4 +1,10 @@
 
+function Base.intersect(p::Point{T}, l::Segment{S}) where {T,S}
+    if p ∈ l 
+        project(p, l)
+    end
+    return nothing
+end
 
 function Base.intersect(l1::Line, l2::Segment)
     i = l1 ∩ Line(l2)
@@ -10,15 +16,6 @@ function Base.intersect(l1::Line, l2::Segment)
     return nothing
 end
 
-function Base.intersect(l1::Segment{T}, l2::Segment{S}) where {T,S} 
-    i = intersect(l1, Line(l2))
-    if i isa Point && i ∈ l2
-        return i
-    elseif i isa Segment
-        return overlapping_segment(l1, l2)
-    end
-    return nothing
-end
 
 function Base.intersect(l::Line, r::AbstractQuatrilateral{R}) where R
     s = sides(r)

@@ -3,23 +3,23 @@ x implementation done
 xx testing done as well
 
 
-                  display | constructors | == | isapprox | shift | scale | rotate | align | simplify | bounding box
-Point           :    xx   |      xx      | xx |    xx    |   x   |   x   |    x   |   x   |    x     |        
-Segment         :         |              |    |          |       |       |        |       |          |        
-Line            :         |              |    |          |       |       |        |       |          |        
-AxisRect        :         |              |    |          |       |       |        |       |          |        
-Rect            :         |              |    |          |       |       |        |       |          |        
-Circle          :         |              |    |          |       |       |        |       |          |        
-Ellipse         :         |              |    |          |       |       |        |       |          |        
-Triangle        :         |              |    |          |       |       |        |       |          |        
-Qatrilateral    :         |              |    |          |       |       |        |       |          |        
-Polygon         :         |              |    |          |       |       |        |       |          |        
+                  display | constructors | == | approx | shift | scale | rotate | align | simplify | bounding box | ∈ 
+Point           :    xx   |      xx      | xx |   xx   |   x   |   x   |    x   |   x   |    x     |              | x
+Segment         :    xx   |      xx      | x  |    x   |   x   |   x   |    x   |   x   |    x     |              | x
+Line            :         |              |    |        |       |       |        |       |          |              | 
+AxisRect        :         |              |    |        |       |       |        |       |          |              | 
+Rect            :         |              |    |        |       |       |        |       |          |              | 
+Circle          :         |              |    |        |       |       |        |       |          |              | 
+Ellipse         :         |              |    |        |       |       |        |       |          |              | 
+Triangle        :         |              |    |        |       |       |        |       |          |              | 
+Qatrilateral    :         |              |    |        |       |       |        |       |          |              | 
+Polygon         :         |              |    |        |       |       |        |       |          |              | 
 
 
 intersects:
                   Point | Segment | Line | AxisRect | Rect | Circle | Ellipse | Triangle | Quatrilateral | Polygon
-Point           :   x   |         |      |          |      |        |         |          |               |         
-Segment         :   -   |         |      |          |      |        |         |          |               |         
+Point           :   x   |    x    |      |          |      |        |         |          |               |         
+Segment         :   -   |    x    |      |          |      |        |         |          |               |         
 Line            :   -   |    -    |      |          |      |        |         |          |               |         
 AxisRect        :   -   |    -    |   _  |          |      |        |         |          |               |         
 Rect            :   -   |    -    |   _  |     -    |      |        |         |          |               |         
@@ -32,8 +32,8 @@ Polygon         :   -   |    -    |   _  |     -    |   -  |   -    |    -    | 
 
 dist: 
                   Point | Segment | Line | AxisRect | Rect | Circle | Ellipse | Triangle | Quatrilateral | Polygon
-Point           :   x   |         |      |          |      |        |         |          |               |         
-Segment         :   -   |         |      |          |      |        |         |          |               |         
+Point           :   xx  |    x    |      |          |      |        |         |          |               |         
+Segment         :   -   |    x    |      |          |      |        |         |          |               |         
 Line            :   -   |    -    |      |          |      |        |         |          |               |         
 AxisRect        :   -   |    -    |   _  |          |      |        |         |          |               |         
 Rect            :   -   |    -    |   _  |     -    |      |        |         |          |               |         

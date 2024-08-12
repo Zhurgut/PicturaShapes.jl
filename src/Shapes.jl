@@ -9,7 +9,7 @@ using LinearAlgebra
 
 # precision used for comparison, 
 # == checks for ==, which may not be meaningful due to rounding errors
-# use \isapprox to compare shapes
+# so use \approx to compare shapes
 
 DIGITS::Int = 3
 EPS::Float64 = 1e-3
@@ -103,17 +103,49 @@ struct Quatrilateral{T} <: AbstractPolygon{T}
 end
 
 
-Base.intersect(s1::AbstractShape, s2::AbstractShape) = intersect(s2,s1)
-Base.intersect(p::Point{T}, s::AbstractShape) where T = p ∈ s ? p : nothing
-
-
 # distance function
 # distance from edge, positive if p is outside of shape
 # negative if p is inside shape
 dist(l, p::Point{T}) where T = dist(p,l)
 
 
+function Base.:(==)(s1::AbstractShape{T}, s2::AbstractShape{S}) where {T, S}
+    # this gets only called, when s1 and s2 have different types, e.g. a point and a segment
+    ss1 = simplify(s1)
+    ss2 = simplify(s2)
+    if ss1 != s1 || ss2 != s2
+        # simplification changed things
+        return ss1 == ss2 # one more chance
+    else 
+        # else different types means different shape
+        return false
+    end
+end
+function Base.isapprox(s1::AbstractShape{T}, s2::AbstractShape{S}) where {T, S}
+    # this gets only called, when s1 and s2 have different types, e.g. a point and a segment
+    ss1 = simplify(s1)
+    ss2 = simplify(s2)
+    if ss1 != s1 || ss2 != s2
+        # simplification changed things
+        return ss1 ≈ ss2 # one more chance
+    else 
+        # else different types means different shape
+        return false
+    end
+end
+
+
+
 simplify(s::AbstractShape{T}) where T = s # some shapes can't be simplified, some can sometimes
+
+
+
+Base.intersect(s1::AbstractShape, s2::AbstractShape) = intersect(s2,s1)
+Base.intersect(p::Point{T}, s::AbstractShape) where T = p ∈ s ? p : nothing
+
+
+
+
 
 
 export align, simplify
@@ -128,8 +160,8 @@ include("show.jl")
 include("Point.jl")
 export Point, magnitude # LinearAlgebra.normalize
 
-# include("Segment.jl")
-# export Segment
+include("Segment.jl")
+export Segment
 
 # include("Line.jl")
 # export Line

@@ -18,6 +18,13 @@ end
     display(p)
     println(ip)
     display(ip)
+
+    s = Segment(p, p)
+    is = Segment(ip, ip)
+    println(s)
+    display(s)
+    println(is)
+    display(is)
 end
 
 @testset "constructors" begin
@@ -26,12 +33,12 @@ end
     @test typeof(Point(1, 2.0)) == Point{Float64}
     @test typeof(Point{Float64}(a)) == Point{Float64}
 
-    # s = Segment(1, 2, 3, 4)
-    # @test typeof(s) == Segment{Int}
-    # @test typeof(Segment{Float64}(1, 2, 3, 4)) == Segment{Float64}
-    # @test typeof(Segment(a, Point(1, 2.0))) == Segment{Float64}
-    # @test typeof(Segment{Float64}(1, 2, Point(1, 2))) == Segment{Float64}
-    # @test typeof(Segment(1, 2, Point(1, 2))) == Segment{Int}
+    s = Segment(1, 2, 3, 4)
+    @test typeof(s) == Segment{Int}
+    @test typeof(Segment(1, 2, 3, 4)) == Segment{Int}
+    @test typeof(Segment(a, Point(1, 2.0))) == Segment{Float64}
+    @test typeof(Segment(Point(1, 2), 1, 2)) == Segment{Int}
+    @test typeof(Segment(a, 3.0, 4.0)) == Segment{Float64}
 
     # l = Line(10*π, 10)
     # @test 1+l.θ ≈ 1.0
@@ -98,25 +105,27 @@ end
     @test rotate(a, π) ≈ -a
 end
 
-# @testset "segments" begin
-#     a = Segment(3, 0, 0, 4)
-#     b = Segment(0, 0, 4, 3)
-#     c = Point(48/25, 36/25)
-#     # @test = c ≈ (a ∩ b)::Point{Float64}
-#     @test a ≈ (rotate(b, π/2) + Point(3, 0))
-#     @test dist(Point(0,0), a - c)+1 ≈ 1.0
-#     @test c ∈ b
-#     @test Point(0,0) ∉ a
-#     @test a ∩ c == b ∩ c
-#     @test c == scale(b, 10, 10) ∩ c
 
-#     out = Segment(-3, 8, 6, -4)
-#     overlaper = Segment(c, 6, -4)
-#     overlap = Segment(c, 3, 0)
 
-#     @test Shapes.overlapping_segment(a, out) ≈ a
-#     @test Shapes.overlapping_segment(a, overlaper) ≈ overlap
-# end
+@testset "segments" begin # what are these tests doint?
+    a = Segment(3, 0, 0, 4)
+    b = Segment(0, 0, 4, 3)
+    c = Point(48/25, 36/25)
+    # @test = c ≈ (a ∩ b)::Point{Float64}
+    @test a ≈ (rotate(b, π/2) + Point(3, 0))
+    @test dist(Point(0,0), a - c)+1 ≈ 1.0
+    @test c ∈ b
+    @test Point(0,0) ∉ a
+    @test a ∩ c == b ∩ c
+    @test c == scale(b, 10, 10) ∩ c
+
+    out = Segment(-3, 8, 6, -4)
+    overlaper = Segment(c, 6, -4)
+    overlap = Segment(c, 3, 0)
+
+    @test Shapes.overlapping_segment(a, out) ≈ a
+    @test Shapes.overlapping_segment(a, overlaper) ≈ overlap
+end
 
 # @testset "lines" begin
 #     l = Line(2, 0, 0, 2)
