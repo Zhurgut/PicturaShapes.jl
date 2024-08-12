@@ -158,13 +158,13 @@ include("show.jl")
 
 
 
-include("Point.jl")
+include("shapes/Point.jl")
 export Point, magnitude # LinearAlgebra.normalize
 
-include("Segment.jl")
+include("shapes/Segment.jl")
 export Segment
 
-include("Line.jl")
+include("shapes/Line.jl")
 export Line
 
 # include("AxisRect.jl")
