@@ -7,22 +7,33 @@ using LinearAlgebra
 
 
 
-
+# precision used for comparison, 
+# == checks for ==, which may not be meaningful due to rounding errors
+# use \isapprox to compare shapes
 
 DIGITS::Int = 3
 EPS::Float64 = 1e-3
 
-function set_eps(eps)
-    global DIGITS, EPS
-    DIGITS = -log10(eps) |> round |> Int
-    EPS = 10.0^-DIGITS
+function set_eps(eps::Real)
+    if 0 < eps < 1 
+        global DIGITS, EPS
+        DIGITS = -(log10(eps) |> floor |> Int)
+        EPS = eps
+    else
+        @warn "to set eps for shape comparison, eps needs to be between 0 and 1, you gave: $eps"
+    end
+end
+
+function rounded(x)
+    global DIGITS
+    return round(x, digits=DIGITS)
 end
 
 
 
 abstract type AbstractShape{T} end
-abstract type AbstractQuatrilateral{T} <: AbstractShape{T} end # corners, sides
-export AbstractShape, AbstractQuatrilateral
+abstract type AbstractPolygon{T} <: AbstractShape{T} end # has corners and sides
+export AbstractShape, AbstractPolygon
 
 struct Point{T} <: AbstractShape{T}
     x::T
@@ -39,6 +50,7 @@ struct Line <: AbstractShape{Float64}
     θ::Float64 # angle between x axis and shortest line to line [-π, π[
     dist::Float64 # distance of line from origin
 
+    # thou (the user) shalt not use this constructor!
     Line(theta::Float64, dist::Float64) = new(mod2pi(theta + π + (dist < 0)π) - π, abs(dist))
 end
 
@@ -47,13 +59,13 @@ end
     # :corner
     # :center
     # :radius
-struct AxisRect{T} <: AbstractQuatrilateral{T}
+struct AxisRect{T} <: AbstractPolygon{T}
     tl::Point{T}
     w::T
     h::T
 end
 
-struct Rect{T} <: AbstractQuatrilateral{T}
+struct Rect{T} <: AbstractPolygon{T}
     tl::Point{T}
     w::T
     h::T
@@ -64,27 +76,26 @@ end
 
 struct Circle{T} <: AbstractShape{T}
     center::Point{T}
-    radius::Float64
+    radius::T
 
-    Circle{T}(p::Point{T}, r::Float64) where T = new(p, abs(r))
+    Circle{T}(p::Point{T}, r::T) where T = new(p, abs(r))
 end
 
 struct Ellipse{T} <: AbstractShape{T}
     center::Point{T}
-    radius_x::Float64 # along x axis (before rotation)
-    radius_y::Float64 # along y axis
+    radius::Point{T}
     θ::Float64
 
-    Ellipse{T}(p::Point{T}, r1::Float64, r2::Float64, θ::Float64) where T = new(p, abs(r1), abs(r2), mod2pi(θ + π) - π)
+    Ellipse{T}(p::Point{T}, r::Point{T}, θ::Float64) where T = new(p, Point(abs(r.x), abs(r.y)), mod2pi(θ + π) - π)
 end
 
-struct Triangle{T} <: AbstractShape{T}
+struct Triangle{T} <: AbstractPolygon{T}
     p1::Point{T}
     p2::Point{T}
     p3::Point{T}
 end
 
-struct Quatrilateral{T} <: AbstractQuatrilateral{T}
+struct Quatrilateral{T} <: AbstractPolygon{T}
     p1::Point{T}
     p2::Point{T}
     p3::Point{T}
@@ -94,7 +105,7 @@ end
 
 Base.intersect(s1::AbstractShape, s2::AbstractShape) = intersect(s2,s1)
 Base.intersect(p::Point{T}, s::AbstractShape) where T = p ∈ s ? p : nothing
-Base.:(+)(p::Point{T}, s) where T = s + p
+
 
 # distance function
 # distance from edge, positive if p is outside of shape
@@ -102,40 +113,48 @@ Base.:(+)(p::Point{T}, s) where T = s + p
 dist(l, p::Point{T}) where T = dist(p,l)
 
 
-export dist, translate, scale, rotate # Base.intersect, Base.in
+simplify(s::AbstractShape{T}) where T = s # some shapes can't be simplified, some can sometimes
+
+
+export align, simplify
+export dist, shift, scale, rotate # Base.intersect, Base.in
+
+include("nice_constructors.jl")
+include("operators.jl")
+include("show.jl")
 
 
 
 include("Point.jl")
 export Point, magnitude # LinearAlgebra.normalize
 
-include("Segment.jl")
-export Segment
+# include("Segment.jl")
+# export Segment
 
-include("Line.jl")
-export Line
+# include("Line.jl")
+# export Line
 
-include("AxisRect.jl")
-export AxisRect, corners, sides, center
+# include("AxisRect.jl")
+# export AxisRect, corners, sides, center
 
-include("Rect.jl")
-export Rect
+# include("Rect.jl")
+# export Rect
 
-include("Quatrilateral.jl") 
-export Quatrilateral
+# include("Quatrilateral.jl") 
+# export Quatrilateral
 
-include("Circle.jl")
-export Circle
+# include("Circle.jl")
+# export Circle
 
-include("Ellipse.jl")
-export Ellipse
+# include("Ellipse.jl")
+# export Ellipse
 
-include("Triangle.jl")
-export Triangle
+# include("Triangle.jl")
+# export Triangle
 
-include("intersects.jl")
+# include("intersects.jl")
 
-include("BoundingBoxes.jl")
-export bounding_box
+# include("BoundingBoxes.jl")
+# export bounding_box
 
 end

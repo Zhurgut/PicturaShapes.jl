@@ -1,14 +1,48 @@
-Point           : 
-Segment         : all intersects...
-Line            : intersect vline, all intersects...
-AxisRect        : all intersects...
-Rect            : all intersects...
-Circle          : intersect vline, all intersects...
-Ellipse         : all intersects...
-Triangle        : intersect hline, intersect vline, all intersects...
-Qatrilateral    : (test) all intersects...
-Polygon         : (test) Constructors, +-, *, dist, ==, approx, rotate, translate, scale, in, intersect hline, intersect vline, all intersects...
-bounding boxes  : (test) Triangle, Polygon, 
+
+x implementation done
+xx testing done as well
+
+
+                  display | constructors | == | isapprox | shift | scale | rotate | align | simplify | bounding box
+Point           :    xx   |      xx      | xx |    xx    |   x   |   x   |    x   |   x   |    x     |        
+Segment         :         |              |    |          |       |       |        |       |          |        
+Line            :         |              |    |          |       |       |        |       |          |        
+AxisRect        :         |              |    |          |       |       |        |       |          |        
+Rect            :         |              |    |          |       |       |        |       |          |        
+Circle          :         |              |    |          |       |       |        |       |          |        
+Ellipse         :         |              |    |          |       |       |        |       |          |        
+Triangle        :         |              |    |          |       |       |        |       |          |        
+Qatrilateral    :         |              |    |          |       |       |        |       |          |        
+Polygon         :         |              |    |          |       |       |        |       |          |        
+
+
+intersects:
+                  Point | Segment | Line | AxisRect | Rect | Circle | Ellipse | Triangle | Quatrilateral | Polygon
+Point           :   x   |         |      |          |      |        |         |          |               |         
+Segment         :   -   |         |      |          |      |        |         |          |               |         
+Line            :   -   |    -    |      |          |      |        |         |          |               |         
+AxisRect        :   -   |    -    |   _  |          |      |        |         |          |               |         
+Rect            :   -   |    -    |   _  |     -    |      |        |         |          |               |         
+Circle          :   -   |    -    |   _  |     -    |   -  |        |         |          |               |         
+Ellipse         :   -   |    -    |   _  |     -    |   -  |   -    |         |          |               |         
+Triangle        :   -   |    -    |   _  |     -    |   -  |   -    |    -    |          |               |         
+Qatrilateral    :   -   |    -    |   _  |     -    |   -  |   -    |    -    |    -     |               |         
+Polygon         :   -   |    -    |   _  |     -    |   -  |   -    |    -    |    -     |       -       |         
+
+
+dist: 
+                  Point | Segment | Line | AxisRect | Rect | Circle | Ellipse | Triangle | Quatrilateral | Polygon
+Point           :   x   |         |      |          |      |        |         |          |               |         
+Segment         :   -   |         |      |          |      |        |         |          |               |         
+Line            :   -   |    -    |      |          |      |        |         |          |               |         
+AxisRect        :   -   |    -    |   _  |          |      |        |         |          |               |         
+Rect            :   -   |    -    |   _  |     -    |      |        |         |          |               |         
+Circle          :   -   |    -    |   _  |     -    |   -  |        |         |          |               |         
+Ellipse         :   -   |    -    |   _  |     -    |   -  |   -    |         |          |               |         
+Triangle        :   -   |    -    |   _  |     -    |   -  |   -    |    -    |          |               |         
+Qatrilateral    :   -   |    -    |   _  |     -    |   -  |   -    |    -    |    -     |               |         
+Polygon         :   -   |    -    |   _  |     -    |   -  |   -    |    -    |    -     |       -       |         
+
 rendering...
 
 vline and hline intersects need to be type stable for performance!
