@@ -6,7 +6,7 @@ xx testing done as well
                   display | constructors | == | approx | shift | scale | rotate | align | simplify | bounding box | ∈ 
 Point           :    xx   |      xx      | xx |   xx   |   x   |   x   |    x   |   x   |    x     |              | x
 Segment         :    xx   |      xx      | x  |    x   |   x   |   x   |    x   |   x   |    x     |              | x
-Line            :         |              |    |        |       |       |        |       |          |              | 
+Line            :    x    |      x       | x  |   x    |   x   |   x   |    x   |   x   |    x     |              | x
 AxisRect        :         |              |    |        |       |       |        |       |          |              | 
 Rect            :         |              |    |        |       |       |        |       |          |              | 
 Circle          :         |              |    |        |       |       |        |       |          |              | 
@@ -18,9 +18,9 @@ Polygon         :         |              |    |        |       |       |        
 
 intersects:
                   Point | Segment | Line | AxisRect | Rect | Circle | Ellipse | Triangle | Quatrilateral | Polygon
-Point           :   x   |    x    |      |          |      |        |         |          |               |         
-Segment         :   -   |    x    |      |          |      |        |         |          |               |         
-Line            :   -   |    -    |      |          |      |        |         |          |               |         
+Point           :   x   |    x    |   x  |          |      |        |         |          |               |         
+Segment         :   -   |    x    |   x  |          |      |        |         |          |               |         
+Line            :   -   |    -    |   x  |          |      |        |         |          |               |         
 AxisRect        :   -   |    -    |   _  |          |      |        |         |          |               |         
 Rect            :   -   |    -    |   _  |     -    |      |        |         |          |               |         
 Circle          :   -   |    -    |   _  |     -    |   -  |        |         |          |               |         
@@ -32,7 +32,7 @@ Polygon         :   -   |    -    |   _  |     -    |   -  |   -    |    -    | 
 
 dist: 
                   Point | Segment | Line | AxisRect | Rect | Circle | Ellipse | Triangle | Quatrilateral | Polygon
-Point           :   xx  |    x    |      |          |      |        |         |          |               |         
+Point           :   xx  |    x    |   x  |          |      |        |         |          |               |         
 Segment         :   -   |    x    |      |          |      |        |         |          |               |         
 Line            :   -   |    -    |      |          |      |        |         |          |               |         
 AxisRect        :   -   |    -    |   _  |          |      |        |         |          |               |         

@@ -6,6 +6,14 @@ function Base.intersect(p::Point{T}, l::Segment{S}) where {T,S}
     return nothing
 end
 
+function Base.intersect(p::Point{T}, l::Line) where T
+    if p ∈ l
+        return project(p, l)
+    end
+    return nothing
+end
+
+
 function Base.intersect(l1::Line, l2::Segment)
     i = l1 ∩ Line(l2)
     if i isa Point && i ∈ l2

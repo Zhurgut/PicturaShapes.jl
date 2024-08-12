@@ -20,7 +20,7 @@ function set_eps(eps::Real)
         DIGITS = -(log10(eps) |> floor |> Int)
         EPS = eps
     else
-        @warn "to set eps for shape comparison, eps needs to be between 0 and 1, you gave: $eps"
+        @warn "to set eps for shape comparison, eps needs to be between 0 and 1, you gave: $eps\nDoing nothing now..."
     end
 end
 
@@ -117,7 +117,7 @@ function Base.:(==)(s1::AbstractShape{T}, s2::AbstractShape{S}) where {T, S}
         # simplification changed things
         return ss1 == ss2 # one more chance
     else 
-        # else different types means different shape
+        # else different types means different shape 🤷
         return false
     end
 end
@@ -135,13 +135,14 @@ function Base.isapprox(s1::AbstractShape{T}, s2::AbstractShape{S}) where {T, S}
 end
 
 
+align(s::AbstractShape) = s
+simplify(s::AbstractShape) = s # some shapes can't be simplified, some can sometimes
 
-simplify(s::AbstractShape{T}) where T = s # some shapes can't be simplified, some can sometimes
 
 
-
-Base.intersect(s1::AbstractShape, s2::AbstractShape) = intersect(s2,s1)
+Base.intersect(s1::AbstractShape, s2) = intersect(s2,s1)
 Base.intersect(p::Point{T}, s::AbstractShape) where T = p ∈ s ? p : nothing
+Base.intersect(::Nothing, s::AbstractShape) = nothing
 
 
 
@@ -151,7 +152,7 @@ Base.intersect(p::Point{T}, s::AbstractShape) where T = p ∈ s ? p : nothing
 export align, simplify
 export dist, shift, scale, rotate # Base.intersect, Base.in
 
-include("nice_constructors.jl")
+include("constructors.jl")
 include("operators.jl")
 include("show.jl")
 
@@ -163,8 +164,8 @@ export Point, magnitude # LinearAlgebra.normalize
 include("Segment.jl")
 export Segment
 
-# include("Line.jl")
-# export Line
+include("Line.jl")
+export Line
 
 # include("AxisRect.jl")
 # export AxisRect, corners, sides, center
