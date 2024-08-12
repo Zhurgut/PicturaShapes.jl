@@ -1,108 +1,100 @@
 
 # finite line
 
-struct Segment{T <: Real}
-    p1::Point{T}
-    p2::Point{T}
+
+function Segment(p1::Point{T}, p2::Point{S}) where {T, S}
+    R = promote_type(T, S)
+    return Segment{R}(Point{R}(p1), Point{R}(p2))
 end
-
-
-function Segment(p1::Point, p2::Point)
-    (x, y) = Base.promote(p1.x, p2.x)
-    T = typeof(x)
-    return Segment{T}(p1, p2)
-end
-
-Segment{T}(l::Segment) where T = Segment{T}(l.p1, l.p2)
 
 Segment(x1, y1, x2, y2) = Segment(Point(x1, y1), Point(x2, y2))
+Segment(p1::Point{T}, x2, y2) where T = Segment(p1, Point(x2, y2))
+Segment(x1, y1, p2::Point{T}) where T = Segment(Point(x1, y1), p2)
+
 Segment{T}(x1, y1, x2, y2) where T = Segment{T}(Point{T}(x1, y1), Point{T}(x2, y2))
+Segment{T}(p1::Point{S}, x2, y2) where {T, S} = Segment{T}(Point{T}(p1), Point{T}(x2, y2))
+Segment{T}(x1, y1, p2::Point{S}) where {T, S} = Segment{T}(Point{T}(x1, y1), Point{T}(p2))
 
-Base.convert(::Type{Segment{T}}, l::Segment) where T = Segment{T}(l)
-
-Segment{T}(l::Line) where T = Segment{T}(l.p1, l.p2)
-Segment(l::Line) = Segment(l.p1, l.p2)
-
-Line{T}(l::Segment) where T = Line{T}(l.p1, l.p2)
-Line(l::Segment) = Line(l.p1, l.p2)
+Segment(l::Line) = (Circle(0,0, max(1, 2*l.dist)) ∩ l)::Segment{Float64}
 
 
-
-Base.length(l::Segment) = dist(l.p1, l.p2)
-
-rotate(l::Segment, θ::Float64) = Segment(rotate(l.p1, θ), rotate(l.p2, θ))
-
-Base.:(+)(p::Point, l::Segment) = l + p
-Base.:(+)(l::Segment, p::Point) = Line(l.p1 + p, l.p2 + p)
-Base.:(-)(l::Segment, p::Point) = l + (-p)
-
-scale(l::Segment, xs, ys) = Segment(scale(l.p1, xs, ys), scale(l.p2, xs, ys))
-Base.:(*)(l::Segment, r::Real) = r*l
-Base.:(*)(r::Real, l::Segment) = Segment(r*l.p1, r*l.p2)
-
-delta(x::Point, l::Segment) = delta(x, Line(l))
+Base.:(+)(l::Segment{N}, p::Point{T}) where {T,N} = Segment(l.p1 + p, l.p2 + p)
+Base.:(-)(l::Segment{N}, p::Point{T}) where {T,N} = l + (-p)
+Base.:(*)(r, l::Segment{T}) where T = Segment(r*l.p1, r*l.p2)
 
 
-function dist(p::Point, l::Segment)
-    δ = delta(p, Line(l))
+
+
+#               x
+#               |
+#               |
+# +-------------+------------+
+#l.p1           s          l.p2
+
+# s = l.p1 + delta*(l.p2-.lp1), (s-x) ⊥ (l.p2-l.p1)
+function delta(x::Point{T}, l::Segment{S}) where {T,S}
+    d = l.p2-l.p1
+    d != Point(0.0, 0.0) || error("cant compute delta, invalid segment (l.p1 == l.p2)...")
+    return ((x-l.p1) ⋅ d) / (d ⋅ d)
+end
+
+
+
+Base.length(l::Segment{T}) where T = dist(l.p1, l.p2) 
+
+function dist(p::Point{T}, l::Segment{S}) where {T,S}
+    if l.p1 == l.p2 return dist(p, l.p1) end
+    δ = delta(p, l)
     if 0 <= δ <= 1
-        return dist(p, Line(l))
+        s = l.p1 + δ*(l.p2-l.p1)
+        return dist(p, s)
     end
     return min(dist(p, l.p1), dist(p, l.p2))
 end
 
-Base.in(p::Point, l::Segment) = (dist(p, Line(l)) < length(l)*1e-7) && (0 <= delta(p, l) <= 1)
-
-function Base.intersect(p::Point, l::Segment)
-    if p ∈ l
-        return p
-    else
-        return nothing
-    end
-end
 
 
-function Base.intersect(l1::Line, l2::Segment)
-    i = intersect(l1, Line(l2))
-    if i isa Point
-        if i ∈ l2
-            return i
-        else
-            return nothing
-        end
-    elseif i isa Line
-        return l2
-    else
-        return nothing
-    end
-    return nothing
-end
+Base.:(==)(l1::Segment{T}, l2::Segment{S})    where {T,S} = (l1.p1 == l2.p1 && l1.p2 == l2.p2) || (l1.p1 == l2.p2 && l1.p2 == l2.p1)
+Base.isapprox(l1::Segment{T}, l2::Segment{S}) where {T,S} = (l1.p1 ≈  l2.p1 && l1.p2 ≈  l2.p2) || (l1.p1 ≈  l2.p2 && l1.p2 ≈  l2.p1)
 
-function Base.intersect(l1::Segment, l2::Segment)
-    i = intersect(l1, Line(l2))
-    if i isa Point
-        if i ∈ l2
-            return i
-        else
-            return nothing
-        end
-    elseif i isa Segment
-        return overlapping_segment(l1, l2)
-    else
-        return nothing
+
+
+rotate(l::Segment{T}, θ) where T = Segment(rotate(l.p1, θ), rotate(l.p2, θ))
+translate(l::Segment{T}, dx, dy)  where T = Segment(translate(l.p1, dx, dy), translate(l.p2, dx, dy))
+scale(l::Segment{T}, sx, sy) where T = Segment(scale(l.p1, sx, sy), scale(l.p2, sx, sy))
+
+
+
+align(s::Segment{T}) where T = Segment(align(s.p1), align(s.p2))
+
+
+
+Base.in(p::Point{T}, l::Segment{S}) where {T,S} = dist(p, l) < EPS
+
+function Base.intersect(p::Point{T}, l::Segment{S}) where {T,S}
+    if p ∈ l 
+        δ = delta(p, l)
+        s = l.p1 + δ*(l.p2-l.p1)
+        return s
     end
     return nothing
 end
 
-function overlapping_segment(l1::Segment, l2::Segment)
+# assumes both segments live on the same infinite line
+function overlapping_segment(l1::Segment{T}, l2::Segment{S}) where {T,S}
     δ₁ = delta(l2.p1, l1)
     δ₂ = delta(l2.p2, l1)
-    δₛ = max(0, min(δ₁, δ₂))
-    δₜ = min(1, max(δ₁, δ₂))
-    if δₛ == δₜ
-        return (δₛ-1)l.p1+δₛ*l.p2
-    elseif δₛ < δₜ
-        return Segment((δₛ-1)l.p1+δₛ*l.p2, (δₜ-1)l.p1+δₜ*l.p2)
+    δₛ = min(δ₁, δ₂)
+    δₜ = max(δ₁, δ₂)
+    p1,p2 = l1.p1, l1.p2
+    if abs(δₛ-1) < EPS
+        return p2
+    elseif abs(δₜ) < EPS
+        return p1
+    elseif δₛ <= 1 || 0 <= δₜ
+        δₛ = max(δₛ, 0)
+        δₜ = min(δₜ, 1)
+        return Segment((1-δₛ)p1 + δₛ*p2, (1-δₜ)p1 + δₜ*p2)
     end
     return nothing
 end
