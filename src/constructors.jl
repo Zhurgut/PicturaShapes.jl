@@ -47,3 +47,41 @@ function Line(p1::Point{T}, p2::Point{S}) where {T, S}
     
 end
 
+
+
+
+
+# possible modes:
+    # :corner
+    # :center
+    # :radius
+    
+AxisRect(x, y, w, h; mode=:corner) = AxisRect(Point(x, y), w, h, mode)
+AxisRect(p, w, h; mode=:corner)    = AxisRect(p, w, h, mode)
+
+function AxisRect(p1::Point{T1}, p2::Point{T2}) where {T1, T2}
+    w = abs(p1.x - p2.x)
+    h = abs(p1.y - p2.y)
+    tl = Point(min(p1.x, p2.x), min(p1.y, p2.y))
+    return AxisRect(tl, w, h)
+end
+
+
+function AxisRect(p::Point{F}, w, h, mode) where F
+    if mode == :center
+        tlc = Point(p.x-w/2, p.y-h/2)
+        Tc = promote_type(typeof(tl.x), typeof(w), typeof(h))
+        return AxisRect{Tc}(tlc, w, h)
+    elseif mode == :radius
+        # center=p, xradius=w, yradius=h
+        tlr = Point(p.x - w, p.y - h)
+        Tr = promote_type(typeof(tlr.x), typeof(w), typeof(h))
+        return AxisRect{Tr}(tlr, 2w, 2h)
+    else # DEFAULT mode == corner
+        T = promote_type(F, typeof(w), typeof(h))
+        return AxisRect{T}(p, w, h)
+    end
+end
+
+
+

@@ -30,3 +30,11 @@ function Base.:(*)(r, l::Line)
         return Line(l.θ + π, r*l.dist)
     end
 end
+
+
+
+
+
+Base.:(+)(a::AxisRect{T}, p::Point{S}) where {S, T} = AxisRect(a.tl + p, a.w, a.h)
+Base.:(-)(a::AxisRect{T}, p::Point{S}) where {S, T} = a + (-p)
+Base.:(*)(r, a::AxisRect{T}) where T = AxisRect(r*a.tl, r*a.w, r*a.h)

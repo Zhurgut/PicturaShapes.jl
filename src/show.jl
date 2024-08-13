@@ -17,3 +17,11 @@ end
 function Base.show(io::IO, ::MIME"text/plain", l::Line)
     print(io, "Line(θ=$(l.θ), dist=$(l.dist)) ≘ ", align(Segment(l)))
 end
+
+function Base.show(io::IO, ::MIME"text/plain", a::AxisRect{T}) where T
+    x = a.tl.x, a.tl.y, a.w, a.h
+    if T <: AbstractFloat
+        x = rounded.(x)
+    end
+    print(io, "AxisRect{$T}(tl=($(x[1]), $(x[2])), w=$(x[3]), h=$(x[4]))")
+end

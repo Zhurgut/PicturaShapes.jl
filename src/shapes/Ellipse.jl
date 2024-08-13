@@ -16,7 +16,7 @@ end
 function Ellipse(f1::Point{T}, f2::Point{S}, a) where {T, S}
     rx = a
     d = 0.5*dist(f1, f2)
-    a >= d || error("focus points too far apart, or a too small")
+    a >= d || error("focus points too far apart, or 'a' too small")
     ry = sqrt(a*a - d*d)
     l = f2 - f1
     θ = atan(l.y, l.x)

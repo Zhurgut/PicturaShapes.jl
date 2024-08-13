@@ -167,8 +167,8 @@ export Segment
 include("shapes/Line.jl")
 export Line
 
-# include("AxisRect.jl")
-# export AxisRect, corners, sides, center
+include("shapes/AxisRect.jl")
+export AxisRect, corners, sides, center
 
 # include("Rect.jl")
 # export Rect
