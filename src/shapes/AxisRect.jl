@@ -1,5 +1,6 @@
 
 # axis aligned rectangle
+# w and h might be negative
 
 
 
@@ -7,10 +8,12 @@
 center(a::AxisRect{T}) where T = Point(a.tl.x + 0.5*a.w, a.tl.y + 0.5*a.h)
 
 function corners(a::AxisRect{T}) where T
-    tl = a.tl
-    tr = Point(a.tl.x + a.w, a.tl.y)
-    bl = Point(a.tl.x, a.tl.y + a.h)
-    br = Point(a.tl.x + a.w, a.tl.y + a.h)
+    x1, x2, y1, y2 = a.tl.x, a.tl.x + a.w, a.tl.y, a.tl.y + a.h
+    l, r, t, b = min(x1, x2), max(x1, x2), min(y1, y2), max(y1, y2)
+    tl = Point(l, t)
+    tr = Point(r, t)
+    bl = Point(l, b)
+    br = Point(r, b)
     return (tl=tl, tr=tr, bl=bl, br=br)
 end
 
@@ -39,7 +42,11 @@ end
 
 
 
-Base.:(==)(a1::AxisRect{T}, a2::AxisRect{S}) where {T,S} = a1.tl == a2.tl && a1.w == a2.w && a1.h == a2.h
+function Base.:(==)(a1::AxisRect{T}, a2::AxisRect{S}) where {T,S}
+    c1 = corners(a1)
+    c2 = corners(a2)
+    return c1.tl == c2.tl && c1.br == c2.br
+end
 function Base.isapprox(a1::AxisRect{T}, a2::AxisRect{S}) where {T,S}
     c1 = corners(a1)
     c2 = corners(a2)

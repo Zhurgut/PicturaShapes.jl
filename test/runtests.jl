@@ -105,6 +105,10 @@ end
     is = Segment(ip, ip)
     prints(s, is)
 
+    l = Line(s)
+    il = Line(is)
+    prints(l, il)
+
     a = AxisRect(p,p)
     ia = AxisRect(ip, ip)
     prints(a, ia)

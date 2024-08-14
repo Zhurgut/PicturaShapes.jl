@@ -7,9 +7,9 @@ y only testing done
                   display | constructors | == | approx | shift | scale | rotate | align | simplify | bounding box | ∈ 
 Point           :    xx   |      xx      | xx |   xx   |   x   |   x   |    x   |   x   |    x     |              | x
 Segment         :    xx   |      xx      | x  |   x    |   x   |   x   |    x   |   x   |    x     |              | x
-Line            :    x    |      xx      | x  |   x    |   x   |   x   |    x   |   x   |    x     |              | x
-AxisRect        :    x    |      xx      | x  |   x    |   x   |   x   |    x   |   x   |    x     |              | x 
-Rect            :     y   |       y      |    |        |       |       |        |       |          |              |  
+Line            :    xx   |      xx      | x  |   x    |   x   |   x   |    x   |   x   |    x     |              | x
+AxisRect        :    xx   |      xx      | x  |   x    |   x   |   x   |    x   |   x   |    x     |              | x 
+Rect            :    xx   |      xx      | x  |   x    |   x   |   x   |    x   |   x   |    x     |              | x
 Circle          :     y   |       y      |    |        |       |       |        |       |          |              |  
 Ellipse         :     y   |       y      |    |        |       |       |        |       |          |              |  
 Triangle        :         |              |    |        |       |       |        |       |          |              |  
