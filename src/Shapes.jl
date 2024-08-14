@@ -170,7 +170,7 @@ export Line
 include("shapes/AxisRect.jl")
 export AxisRect, corners, sides, center
 
-# include("Rect.jl")
+# include("shapes/Rect.jl")
 # export Rect
 
 # include("Quatrilateral.jl") 

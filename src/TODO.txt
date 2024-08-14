@@ -1,18 +1,19 @@
 
 x implementation done
 xx testing done as well
+y only testing done
 
 
                   display | constructors | == | approx | shift | scale | rotate | align | simplify | bounding box | ∈ 
 Point           :    xx   |      xx      | xx |   xx   |   x   |   x   |    x   |   x   |    x     |              | x
 Segment         :    xx   |      xx      | x  |   x    |   x   |   x   |    x   |   x   |    x     |              | x
-Line            :    x    |      x       | x  |   x    |   x   |   x   |    x   |   x   |    x     |              | x
-AxisRect        :    x    |      x       | x  |   x    |   x   |   x   |    x   |   x   |    x     |              | x 
-Rect            :         |              |    |        |       |       |        |       |          |              |  
-Circle          :         |              |    |        |       |       |        |       |          |              |  
-Ellipse         :         |              |    |        |       |       |        |       |          |              |  
+Line            :    x    |      xx      | x  |   x    |   x   |   x   |    x   |   x   |    x     |              | x
+AxisRect        :    x    |      xx      | x  |   x    |   x   |   x   |    x   |   x   |    x     |              | x 
+Rect            :     y   |       y      |    |        |       |       |        |       |          |              |  
+Circle          :     y   |       y      |    |        |       |       |        |       |          |              |  
+Ellipse         :     y   |       y      |    |        |       |       |        |       |          |              |  
 Triangle        :         |              |    |        |       |       |        |       |          |              |  
-Qatrilateral    :         |              |    |        |       |       |        |       |          |              |  
+Qatrilateral    :     y   |              |    |        |       |       |        |       |          |              |  
 Polygon         :         |              |    |        |       |       |        |       |          |              |  
 
 

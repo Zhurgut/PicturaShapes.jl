@@ -12,7 +12,7 @@ function Rect(p::Point{F}, w, h, θ, mode) where F
         return Rect{Tr}(tlr, 2w, 2h, θ)
     else # mode == corner
         T = promote_type(F, typeof(w), typeof(h))
-        return Rect{T}(Point{T}(p), w, h, θ)
+        return Rect{T}(p, w, h, θ)
     end
 end
 
@@ -20,10 +20,6 @@ Rect(x, y, w, h, θ=0.0; mode=:corner) =  Rect(Point(x, y), w, h, θ, mode)
 Rect(p::Point{T}, w, h, θ=0.0; mode=:corner) where T  = Rect(p, w, h, θ, mode)
 Rect(a::AxisRect{T}) where T = Rect{T}(a.tl, a.w, a.h, 0.0)
 
-function Rect{T}(r::Rect{S}) where {T, S}
-    a = AxisRect{T}(AxisRect(r.tl, r.w, r.h))
-    Rect{T}(a.tl, a.w, a.h, r.θ)
-end
 
 function Rect(;tl::Union{Nothing, Point{T1}} = nothing, 
                tr::Union{Nothing, Point{T2}} = nothing, 
@@ -127,10 +123,6 @@ function Base.in(p::Point{T}, r::Rect{S}) where {T, S}
     return p2 ∈ AxisRect(Point(0,0), r.w, r.h)
 end
 
-
-
-
-Base.intersect(p::Point{T}, r::Rect{S}) where {T, S} = p ∈ r ? p : nothing
 
 
 
