@@ -1,18 +1,18 @@
 
-function Base.intersect(p::Point{T}, l::Segment{S}) where {T,S}
-    if p ∈ l 
-        project(p, l)
-    end
-    return nothing
-end
 
-function Base.intersect(p::Point{T}, l::Line) where T
-    if p ∈ l
-        return project(p, l)
-    end
-    return nothing
-end
+Base.intersect(s1::AbstractShape, s2) = intersect(s2,s1)
+Base.intersect(::Nothing, s::AbstractShape) = nothing
 
+Base.intersect(p::Point{T}, s::AbstractShape) where T = p ∈ s ? p : nothing
+
+function Base.intersect(s::Segment{T}, f::AbstractShape) where T
+    i = f ∩ Line(s)
+    if i isa Segment
+        return overlapping_segment(i, s)
+    else 
+        return i ∩ s
+    end
+end
 
 function Base.intersect(l1::Line, l2::Segment)
     i = l1 ∩ Line(l2)

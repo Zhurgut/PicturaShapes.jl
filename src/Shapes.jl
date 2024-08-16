@@ -140,10 +140,6 @@ simplify(s::AbstractShape) = s # some shapes can't be simplified, some can somet
 
 
 
-Base.intersect(s1::AbstractShape, s2) = intersect(s2,s1)
-Base.intersect(p::Point{T}, s::AbstractShape) where T = p ∈ s ? p : nothing
-Base.intersect(::Nothing, s::AbstractShape) = nothing
-
 
 
 

@@ -18,8 +18,8 @@ Polygon         :         |              |    |        |       |       |        
 
 intersects:
                   Point | Segment | Line | AxisRect | Rect | Circle | Ellipse | Triangle | Quatrilateral | Polygon
-Point           :   x   |    x    |   x  |          |      |        |         |          |               |         
-Segment         :   -   |    x    |   x  |          |      |        |         |          |               |         
+Point           :   x   |    x    |   x  |     x    |  x   |   x    |    x    |    x     |      x        |    x    
+Segment         :   -   |    x    |   x  |     x    |  x   |   x    |    x    |    x     |      x        |    x    
 Line            :   -   |    -    |   x  |          |      |        |         |          |               |         
 AxisRect        :   -   |    -    |   _  |          |      |        |         |          |               |         
 Rect            :   -   |    -    |   _  |     -    |      |        |         |          |               |         
