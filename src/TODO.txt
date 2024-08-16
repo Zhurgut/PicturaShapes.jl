@@ -1,19 +1,20 @@
 
 x implementation done
 xx testing done as well
+y only testing done
 
 
                   display | constructors | == | approx | shift | scale | rotate | align | simplify | bounding box | ∈ 
 Point           :    xx   |      xx      | xx |   xx   |   x   |   x   |    x   |   x   |    x     |              | x
-Segment         :    xx   |      xx      | x  |    x   |   x   |   x   |    x   |   x   |    x     |              | x
-Line            :    x    |      x       | x  |   x    |   x   |   x   |    x   |   x   |    x     |              | x
-AxisRect        :         |              |    |        |       |       |        |       |          |              | 
-Rect            :         |              |    |        |       |       |        |       |          |              | 
-Circle          :         |              |    |        |       |       |        |       |          |              | 
-Ellipse         :         |              |    |        |       |       |        |       |          |              | 
-Triangle        :         |              |    |        |       |       |        |       |          |              | 
-Qatrilateral    :         |              |    |        |       |       |        |       |          |              | 
-Polygon         :         |              |    |        |       |       |        |       |          |              | 
+Segment         :    xx   |      xx      | x  |   x    |   x   |   x   |    x   |   x   |    x     |              | x
+Line            :    xx   |      xx      | x  |   x    |   x   |   x   |    x   |   x   |    x     |              | x
+AxisRect        :    xx   |      xx      | x  |   x    |   x   |   x   |    x   |   x   |    x     |              | x 
+Rect            :    xx   |      xx      | x  |   x    |   x   |   x   |    x   |   x   |    x     |              | x
+Circle          :     y   |       y      |    |        |       |       |        |       |          |              |  
+Ellipse         :     y   |       y      |    |        |       |       |        |       |          |              |  
+Triangle        :         |              |    |        |       |       |        |       |          |              |  
+Qatrilateral    :     y   |              |    |        |       |       |        |       |          |              |  
+Polygon         :         |              |    |        |       |       |        |       |          |              |  
 
 
 intersects:
@@ -21,7 +22,7 @@ intersects:
 Point           :   x   |    x    |   x  |     x    |  x   |   x    |    x    |    x     |      x        |    x    
 Segment         :   -   |    x    |   x  |     x    |  x   |   x    |    x    |    x     |      x        |    x    
 Line            :   -   |    -    |   x  |          |      |        |         |          |               |         
-AxisRect        :   -   |    -    |   _  |          |      |        |         |          |               |         
+AxisRect        :   -   |    -    |   _  |     x    |      |        |         |          |               |         
 Rect            :   -   |    -    |   _  |     -    |      |        |         |          |               |         
 Circle          :   -   |    -    |   _  |     -    |   -  |        |         |          |               |         
 Ellipse         :   -   |    -    |   _  |     -    |   -  |   -    |         |          |               |         
@@ -32,7 +33,7 @@ Polygon         :   -   |    -    |   _  |     -    |   -  |   -    |    -    | 
 
 dist: 
                   Point | Segment | Line | AxisRect | Rect | Circle | Ellipse | Triangle | Quatrilateral | Polygon
-Point           :   xx  |    x    |   x  |          |      |        |         |          |               |         
+Point           :   xx  |    x    |   x  |     x    |      |        |         |          |               |         
 Segment         :   -   |    x    |      |          |      |        |         |          |               |         
 Line            :   -   |    -    |      |          |      |        |         |          |               |         
 AxisRect        :   -   |    -    |   _  |          |      |        |         |          |               |         

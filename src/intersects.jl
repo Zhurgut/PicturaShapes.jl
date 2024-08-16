@@ -14,13 +14,13 @@ function Base.intersect(s::Segment{T}, f::AbstractShape) where T
     end
 end
 
-function Base.intersect(l1::Line, l2::Segment)
-    i = l1 ∩ Line(l2)
-    if i isa Point && i ∈ l2
-        return i
-    elseif i isa Line
-        return l2
-    end
+function Base.intersect(l::Line, s::Segment{S}) where S
+    p1, p2 = project.((s.p1, s.p2), l)
+    if Segment(p1, p2) ≈ s return s end
+
+    i = l ∩ Line(s)
+    if i isa Point && i ∈ s return i end
+    
     return nothing
 end
 

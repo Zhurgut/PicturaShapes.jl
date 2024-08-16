@@ -5,6 +5,7 @@ _norm(p::Point{T}) where T = LinearAlgebra.norm((p.x, p.y))
 LinearAlgebra.dot(a::Point{T}, b::Point{S}) where {T,S} = a.x*b.x + a.y*b.y
 magnitude(p::Point{T}) where T = _norm(p)
 LinearAlgebra.normalize(p::Point{T}) where T = (1/magnitude(p))*p
+Base.angle(p::Point{T}) where T = atan(p.y, p.x)
 
 
 dist(p1::Point{T}, p2::Point{S}) where {T,S} = _norm(p2 - p1)

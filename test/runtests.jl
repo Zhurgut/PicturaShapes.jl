@@ -11,79 +11,124 @@ using LinearAlgebra
     Shapes.set_eps(old_eps)
 end
 
-@testset "pretty print" begin
-    p = Point(Float64(π), Float64(π))
-    ip = Point(Int8(1), Int8(2))
-    println(p)
-    display(p)
-    println(ip)
-    display(ip)
 
-    s = Segment(p, p)
-    is = Segment(ip, ip)
-    println(s)
-    display(s)
-    println(is)
-    display(is)
-end
 
 @testset "constructors" begin
     a = Point(1, 2)
     @test typeof(a) == Point{Int}
     @test typeof(Point(1, 2.0)) == Point{Float64}
     @test typeof(Point{Float64}(a)) == Point{Float64}
+    a2::Point{Float64} = a
+    @test a2 == a
 
     s = Segment(1, 2, 3, 4)
     @test typeof(s) == Segment{Int}
-    @test typeof(Segment(1, 2, 3, 4)) == Segment{Int}
     @test typeof(Segment(a, Point(1, 2.0))) == Segment{Float64}
     @test typeof(Segment(Point(1, 2), 1, 2)) == Segment{Int}
-    @test typeof(Segment(a, 3.0, 4.0)) == Segment{Float64}
+    s2::Segment{Float64} = s
+    @test s == s2
+    s3 = Segment(Line(rand(), rand()))
+    @test s3 ∩ l ≈ s3
 
-    # l = Line(10*π, 10)
-    # @test 1+l.θ ≈ 1.0
-    # @test l.dist == 10
-    # @test -π <= Line(-π, 0).θ < π
-    # @test -π <= Line(0, 0).θ  < π
-    # @test -π <= Line(π, 0).θ  < π
-    # @test Line(Point(0, 1), Point(1, 1)) ≈ Line(π/2, 1)
-    # @test Line(0, 1, 1, 1) == Line(Point(0, 1), 1, 1)
+    l1 = Line(1, 0, 0, 1)
+    l2 = Line(angle(Point(1,1)), sqrt(2))
+    @test Segment(l1) ≈ Segment(l2)
+    l3 = Line(-1, 0, 0, -1)
+    l4 = Line(angle(Point(-1, -1)), sqrt(2))
+    @test Segment(l3) ≈ Segment(l4)
+    for i=1:10
+        rs = Segment(randn(), randn(), randn(), randn())
+        @test rs ∩ Line(rs) ≈ rs
+    end
 
-    # ar1 = AxisRect(1, 1, 2, 2)
-    # ar2 = AxisRect(Point(1, 1), 2.0, 2)
-    # ar3 = AxisRect{Float32}(ar1)
-    # @test ar1 == ar2 == ar3
+    ar1 = AxisRect(-2, -1, 4, 2)
+    ar2 = AxisRect(0, 0, 4, 2, mode=:center)
+    ar3 = AxisRect(0, 0, 2, 1, mode=:radius)
+    ar4 = AxisRect(Point(-2, -1), Point(2, 1))
+    @test typeof(ar1) == AxisRect{Int}
+    @test ar1 == ar2
+    @test ar1 == ar3
+    @test ar1 == ar4
 
-    # r1 = Rect(1, -1, 4*sqrt(2), 2*sqrt(2), π/4)
-    # r2 = Rect(Point(1, -1), 4*sqrt(2), 2*sqrt(2), π / 4)
-    # r3 = Rect(tr=Point(5, 3), br=Point(3,5), bl=Point(-1, 1))
-    # r4 = Rect(tl=Point(1, -1), tr=Point(5, 3), br=Point(3,5))
-    # r5 = Rect(tr=Point(1, -1), br=Point(5, 3), tl=Point(-1, 1))
-    # r6 = rotate(AxisRect(0, -sqrt(2), 4*sqrt(2), 2*sqrt(2)), π/4)
-    # @test typeof(r1) == typeof(r6) == Rect{Float64}
-    # @test r1 ≈ r1
-    # @test r1 ≈ r2
-    # @test r1 ≈ r3
-    # @test r1 ≈ r4
-    # @test r1 ≈ r5
-    # @test r1 ≈ r6
+    r1 = Rect(Point(-4, -4.15791), 7.2915, 3.2915, -0.42403)
+    r2 = rotate(AxisRect(0,0, 7.2915026221, 3.291502622, mode=:center), -0.42403)
+    rcs = corners(r1)
+    r3 = Rect(tl=rcs.tl, tr=rcs.tr, bl=rcs.bl)
+    r4 = Rect(0,0, 7.2915026221, 3.291502622, -0.42403, mode=:center)
+    r5 = Rect(0,0, 7.2915026221/2, 3.291502622/2, -0.42403, mode=:radius)
+    @test typeof(Rect(-1, -1, 1, 1)) == Rect{Int}
+    @test r1 ≈ r2
+    @test r1 ≈ r3
+    @test r1 ≈ r4
+    @test r1 ≈ r5
 
-    # c1 = Circle(Point(1,1), 5)
-    # c2 = Circle(1, 1.0, 4.99999999999999999)
-    # c3 = Circle{Float64}(c1)
-    # @test c1 == c3
-    # @test c1 ≈ c2
+    c1 = Circle(Point(1,1), 5)
+    c2 = Circle(1, 1.0, 4.99999999)
+    c3::Circle{Float64} = c1
+    @test typeof(c1) == Circle{Int}
+    @test typeof(c2) == Circle{Float64}
+    @test c1 == c3
+    @test c1 ≈ c2
 
-    # e1 = Ellipse(1, 1, 1, 2)
-    # e2 = Ellipse(1, 1, 2, 1, π/2)
-    # e3 = Ellipse(Point(1, 1-sqrt(3)), Point(1, 1+sqrt(3)), 2)
-    # e4 = Ellipse(Point(1, 1-sqrt(3)), Point(1, 1+sqrt(3)), 2.1)
-    # @test e1 ≈ e2 ≈ e3
-    # @test e1 ≉ e4
+    e1 = Ellipse(1, 1, 1, 2)
+    e2 = Ellipse(Point(1, 1), 2, 1, π/2)
+    e3 = Ellipse(Point(1, 1-sqrt(3)), Point(1, 1+sqrt(3)), 2)
+    e4 = Ellipse(Point(1, 1-sqrt(3)), Point(1, 1+sqrt(3)), 2.1)
+    e5 = Ellipse(Point(1, 1), Point(2, 1), Point(1, 3))
+    @test typeof(e1) == Ellipse{Int}
+    @test typeof(e3) == Ellipse{Float64}
+    @test e1 ≈ e2
+    @test e1 ≈ e3
+    @test e3 ≉ e4
+    @test e1 ≈ e5
 
     # t1 = Triangle(1, 1, Point(2.0, 2), 3, 3.0)
     # t2 = Triangle(3, 3, 2, 2, 1, 1)
     # @test t1 ≈ t2
+end
+
+
+@testset "pretty print" begin
+    function prints(s, is)
+        println(s)
+        display(s)
+        println(is)
+        display(is)
+        println()
+    end
+
+    p = Point(Float64(π), Float64(π))
+    ip = Point(Int8(1), Int8(2))
+    prints(p, ip)
+
+    s = Segment(p, 2p)
+    is = Segment(ip, 2ip)
+    prints(s, is)
+
+    l = Line(s)
+    il = Line(is)
+    prints(l, il)
+
+    a = AxisRect(p,p)
+    ia = AxisRect(ip, ip)
+    prints(a, ia)
+
+    r = rotate(a, exp(1))
+    ir = Rect(Point(1,2), 3,4, exp(1))
+    prints(r, ir)
+
+    q = Quatrilateral(p,p,p,p)
+    iq = Quatrilateral(ip, ip, ip, ip)
+    prints(q, iq)
+
+    c = Circle(p, exp(1))
+    ic = Circle(ip, 2)
+    prints(c, ic)
+
+    e = Ellipse(p, 1/3, 1/6, exp(1))
+    ie = Ellipse(ip, 3, 6, exp(1))
+    prints(e, ie)
+
 end
 
 @testset "points" begin

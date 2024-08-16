@@ -1,5 +1,13 @@
 
 
+# assuming ry=1, rx>1, we have for a=rx
+# sqrt(1 - (x/a)^2) ≈ 1-(x/a)^2 + (0 <= x <= 13a/15)*(15/26 * x/a)^2 + (13a/15<x<=a)*(v*(x/a)^2 + w*(x/a) + z)
+# a quadratic approximation of the ellipse function. use this to find starting point for closest point to ellipse newton stuff
+# v = -(15/4)^2
+# w = 195/8
+# z = -165/16
+
+
 Ellipse(x, y, rx, ry, θ=0.0) = Ellipse(Point(x, y), rx, ry, θ)
 Ellipse(p::Point{T}, rx, ry, θ=0.0) where T = Ellipse{T}(p, Float64(rx), Float64(ry), Float64(θ))
 
@@ -16,7 +24,7 @@ end
 function Ellipse(f1::Point{T}, f2::Point{S}, a) where {T, S}
     rx = a
     d = 0.5*dist(f1, f2)
-    a >= d || error("focus points too far apart, or a too small")
+    a >= d || error("focus points too far apart, or 'a' too small")
     ry = sqrt(a*a - d*d)
     l = f2 - f1
     θ = atan(l.y, l.x)
