@@ -101,8 +101,8 @@ end
     ip = Point(Int8(1), Int8(2))
     prints(p, ip)
 
-    s = Segment(p, p)
-    is = Segment(ip, ip)
+    s = Segment(p, 2p)
+    is = Segment(ip, 2ip)
     prints(s, is)
 
     l = Line(s)
