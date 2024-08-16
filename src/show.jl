@@ -28,11 +28,18 @@ end
 
 function Base.show(io::IO, ::MIME"text/plain", r::Rect{T}) where T
     c = corners(r)
-    c = (c.tl, c.tr, c.br, c.bl)
+    x = (c.tl, c.tr, c.br, c.bl)
     w,h = r.w, r.h
     if T <: AbstractFloat
-        c = aligned.(c)
+        x = align.(x)
         w,h = rounded.((w,h))
     end
     print(io, "Rect{$T}(tl=$(x[1]), tr=$(x[2])), br=$(x[3]), bl=$(x[4]), w=$w, h=$h, θ=$(r.θ))")
+end
+
+function Base.show(io::IO, ::MIME"text/plain", c::Circle{T}) where T
+    if T <: AbstractFloat
+        c = Circle(align(c.center), rounded(c.radius))
+    end
+    print(io, "Circle{$T}(($(c.center.x), $(c.center.y)), radius=$(c.radius))")
 end

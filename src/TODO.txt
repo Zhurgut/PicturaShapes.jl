@@ -10,7 +10,7 @@ Segment         :    xx   |      xx      | x  |   x    |   x   |   x   |    x   
 Line            :    xx   |      xx      | x  |   x    |   x   |   x   |    x   |   x   |    x     |              | x
 AxisRect        :    xx   |      xx      | x  |   x    |   x   |   x   |    x   |   x   |    x     |              | x 
 Rect            :    xx   |      xx      | x  |   x    |   x   |   x   |    x   |   x   |    x     |              | x
-Circle          :     y   |       y      |    |        |       |       |        |       |          |              |  
+Circle          :    xx   |      xx      | x  |   x    |   x   |   x   |    x   |   x   |    x     |              | x
 Ellipse         :     y   |       y      |    |        |       |       |        |       |          |              |  
 Triangle        :         |              |    |        |       |       |        |       |          |              |  
 Qatrilateral    :     y   |              |    |        |       |       |        |       |          |              |  
@@ -21,11 +21,11 @@ intersects:
                   Point | Segment | Line | AxisRect | Rect | Circle | Ellipse | Triangle | Quatrilateral | Polygon
 Point           :   x   |    x    |   x  |     x    |  x   |   x    |    x    |    x     |      x        |    x    
 Segment         :   -   |    x    |   x  |     x    |  x   |   x    |    x    |    x     |      x        |    x    
-Line            :   -   |    -    |   x  |          |      |        |         |          |               |         
-AxisRect        :   -   |    -    |   _  |     x    |      |        |         |          |               |         
-Rect            :   -   |    -    |   _  |     -    |      |        |         |          |               |         
-Circle          :   -   |    -    |   _  |     -    |   -  |        |         |          |               |         
-Ellipse         :   -   |    -    |   _  |     -    |   -  |   -    |         |          |               |         
+Line            :   -   |    -    |   x  |          |      |   x    |         |          |               |         
+AxisRect        :   -   |    -    |   _  |     x    |      |   -    |    -    |          |               |         
+Rect            :   -   |    -    |   _  |     -    |      |   -    |    -    |          |               |         
+Circle          :   -   |    -    |   _  |     -    |   -  |   -    |    -    |    -     |       -       |    -    
+Ellipse         :   -   |    -    |   _  |     -    |   -  |   -    |    -    |    -     |       -       |    -    
 Triangle        :   -   |    -    |   _  |     -    |   -  |   -    |    -    |          |               |         
 Qatrilateral    :   -   |    -    |   _  |     -    |   -  |   -    |    -    |    -     |               |         
 Polygon         :   -   |    -    |   _  |     -    |   -  |   -    |    -    |    -     |       -       |         
@@ -33,12 +33,12 @@ Polygon         :   -   |    -    |   _  |     -    |   -  |   -    |    -    | 
 
 dist: 
                   Point | Segment | Line | AxisRect | Rect | Circle | Ellipse | Triangle | Quatrilateral | Polygon
-Point           :   xx  |    x    |   x  |     x    |      |        |         |          |               |         
+Point           :   xx  |    x    |   x  |     x    |      |   x    |         |          |               |         
 Segment         :   -   |    x    |      |          |      |        |         |          |               |         
 Line            :   -   |    -    |      |          |      |        |         |          |               |         
 AxisRect        :   -   |    -    |   _  |          |      |        |         |          |               |         
 Rect            :   -   |    -    |   _  |     -    |      |        |         |          |               |         
-Circle          :   -   |    -    |   _  |     -    |   -  |        |         |          |               |         
+Circle          :   -   |    -    |   _  |     -    |   -  |   x    |         |          |               |         
 Ellipse         :   -   |    -    |   _  |     -    |   -  |   -    |         |          |               |         
 Triangle        :   -   |    -    |   _  |     -    |   -  |   -    |    -    |          |               |         
 Qatrilateral    :   -   |    -    |   _  |     -    |   -  |   -    |    -    |    -     |               |         

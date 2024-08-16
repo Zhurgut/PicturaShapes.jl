@@ -15,7 +15,6 @@ Base.:(==)(p1::Point{T}, p2::Point{S})    where {T, S} = (p1.x == p2.x && p1.y =
 Base.isapprox(p1::Point{T}, p2::Point{S}) where {T, S} = dist(p1, p2) <= EPS
 
 
-# clockwise, around origin
 rotate(p::Point{T}, θ) where T = Point(cos(θ)*p.x - sin(θ)*p.y, sin(θ)*p.x + cos(θ)*p.y)
 shift(p::Point{T}, dx, dy) where T = Point(p.x + dx, p.y + dy)
 scale(p::Point{T}, sx, sy) where T = Point(sx * p.x, sy * p.y)

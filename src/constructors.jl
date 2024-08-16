@@ -19,10 +19,9 @@ end
 Segment(x1, y1, x2, y2) = Segment(Point(x1, y1), Point(x2, y2))
 Segment(p1::Point{T}, x2, y2) where T = Segment(p1, Point(x2, y2))
 
-Segment(l::Line) = (Circle(0,0, max(1, 2*l.dist)) ∩ l)::Segment{Float64}
+Segment(l::Line)::Segment{Float64} = intersect_with_circle_at_origin(l, max(1, 2*l.dist))
 
 Base.convert(::Type{Segment{T}}, s::Segment{S}) where {T, S} = Segment{T}(Point{T}(s.p1), Point{T}(s.p2))
-Segment{T}(s) where T = convert(Segment{T}, s)
 
 
 
@@ -83,6 +82,7 @@ function AxisRect(p::Point{F}, w, h, mode) where F
     end
 end
 
+Base.convert(::Type{AxisRect{T}}, s::AxisRect{S}) where {T, S} = AxisRect{T}(Point{T}(s.tl), T(s.w), T(s.h))
 
 
 
@@ -128,9 +128,21 @@ function Rect(p::Point{F}, w, h, θ, mode) where F
         return Rect{Tr}(tlr, 2w, 2h, θ)
     elseif mode == :corner # DEFAULT
         T = promote_type(F, typeof(w), typeof(h))
-        return Rect{T}(p, w, h, θ)
+        return Rect{T}(Point{T}(p), w, h, θ)
     else
         error("invalid rectmode '$mode', valid are :center, :radius, :corner")
     end
 end
 
+Base.convert(::Type{Rect{T}}, s::Rect{S}) where {T, S} = Rect{T}(Point{T}(s.tl), T(s.w), T(s.h), s.θ)
+
+
+
+
+function Circle(p::Point{T}, r::S) where {S,T}
+    U = promote_type(S, T)
+    return Circle{U}(Point{U}(p), U(r))
+end
+Circle(x, y, r) = Circle(Point(x, y), r)
+
+Base.convert(::Type{Circle{T}}, s::Circle{S}) where {T, S} = Circle{T}(Point{T}(s.center), T(s.radius))

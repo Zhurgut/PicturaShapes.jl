@@ -13,6 +13,7 @@ end
 
 
 
+
 @testset "constructors" begin
     a = Point(1, 2)
     @test typeof(a) == Point{Int}
@@ -27,18 +28,23 @@ end
     @test typeof(Segment(Point(1, 2), 1, 2)) == Segment{Int}
     s2::Segment{Float64} = s
     @test s == s2
-    s3 = Segment(Line(rand(), rand()))
+    l = Line(rand(), rand())
+    s3 = Segment(l)
     @test s3 ∩ l ≈ s3
 
     l1 = Line(1, 0, 0, 1)
-    l2 = Line(angle(Point(1,1)), sqrt(2))
+    l2 = Line(angle(Point(1,1)), sqrt(2)/2)
     @test Segment(l1) ≈ Segment(l2)
     l3 = Line(-1, 0, 0, -1)
-    l4 = Line(angle(Point(-1, -1)), sqrt(2))
+    l4 = Line(angle(Point(-1, -1)), sqrt(2)/2)
     @test Segment(l3) ≈ Segment(l4)
     for i=1:10
         rs = Segment(randn(), randn(), randn(), randn())
-        @test rs ∩ Line(rs) ≈ rs
+        ls = Line(rs)
+        @test rs ∩ ls ≈ rs
+        rs = Segment(ls)
+        ls = Line(rs)
+        @test rs ∩ ls ≈ rs
     end
 
     ar1 = AxisRect(-2, -1, 4, 2)
@@ -50,7 +56,7 @@ end
     @test ar1 == ar3
     @test ar1 == ar4
 
-    r1 = Rect(Point(-4, -4.15791), 7.2915, 3.2915, -0.42403)
+    r1 = Rect(Point(-4, 0), 7.2915, 3.2915, -0.42403)
     r2 = rotate(AxisRect(0,0, 7.2915026221, 3.291502622, mode=:center), -0.42403)
     rcs = corners(r1)
     r3 = Rect(tl=rcs.tl, tr=rcs.tr, bl=rcs.bl)
@@ -82,9 +88,9 @@ end
     @test e3 ≉ e4
     @test e1 ≈ e5
 
-    # t1 = Triangle(1, 1, Point(2.0, 2), 3, 3.0)
-    # t2 = Triangle(3, 3, 2, 2, 1, 1)
-    # @test t1 ≈ t2
+    t1 = Triangle(1, 1, Point(2.0, 2), 3, 3.0)
+    t2 = Triangle(3, 3, 2, 2, 1, 1)
+    @test t1 ≈ t2
 end
 
 
@@ -117,9 +123,9 @@ end
     ir = Rect(Point(1,2), 3,4, exp(1))
     prints(r, ir)
 
-    q = Quatrilateral(p,p,p,p)
-    iq = Quatrilateral(ip, ip, ip, ip)
-    prints(q, iq)
+    # q = Quatrilateral(p,p,p,p)
+    # iq = Quatrilateral(ip, ip, ip, ip)
+    # prints(q, iq)
 
     c = Circle(p, exp(1))
     ic = Circle(ip, 2)

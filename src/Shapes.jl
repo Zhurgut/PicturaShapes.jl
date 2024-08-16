@@ -151,6 +151,7 @@ export dist, shift, scale, rotate # Base.intersect, Base.in
 include("constructors.jl")
 include("operators.jl")
 include("show.jl")
+include("intersects.jl")
 
 
 
@@ -166,14 +167,14 @@ export Line
 include("shapes/AxisRect.jl")
 export AxisRect, corners, sides, center
 
-# include("shapes/Rect.jl")
-# export Rect
+include("shapes/Rect.jl")
+export Rect
 
 # include("Quatrilateral.jl") 
 # export Quatrilateral
 
-# include("Circle.jl")
-# export Circle
+include("shapes/Circle.jl")
+export Circle
 
 # include("Ellipse.jl")
 # export Ellipse
