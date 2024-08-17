@@ -146,3 +146,33 @@ end
 Circle(x, y, r) = Circle(Point(x, y), r)
 
 Base.convert(::Type{Circle{T}}, s::Circle{S}) where {T, S} = Circle{T}(Point{T}(s.center), T(s.radius))
+
+
+
+
+
+Ellipse(x, y, rx, ry, θ=0.0) = Ellipse(Point(x, y), rx, ry, θ)
+
+function Ellipse(p::Point{T1}, rx::T2, ry::T3, θ=0.0) where {T1, T2, T3}
+    T = promote_type(T1, T2, T3)
+    Ellipse{T}(Point{T}(p), Point{T}(Point(rx, ry)), θ)
+end
+
+
+# p1 and p2 points at the end of axes of the ellipse
+function Ellipse(center::Point{T}, p1::Point{S}, p2::Point{V}) where {V, S, T}
+    rx = dist(p1, center)
+    ry = dist(p2, center)
+    θ = angle(p1 - center)
+    return Ellipse(center, rx, ry, θ)
+end
+
+
+# every point p on ellipse satisfies dist(p, f1) + dist(p, f2) = 2*rx
+function Ellipse(f1::Point{T}, f2::Point{S}, rx) where {T, S}
+    d = 0.5*dist(f1, f2)
+    rx >= d || error("focus points too far apart, or 'a' too small")
+    ry = sqrt(rx*rx - d*d)
+    θ = angle(f2 - f1)
+    return Ellipse(0.5*(f1 + f2), rx, ry, θ)
+end

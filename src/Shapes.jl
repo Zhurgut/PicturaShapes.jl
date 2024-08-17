@@ -176,8 +176,8 @@ export Rect
 include("shapes/Circle.jl")
 export Circle
 
-# include("Ellipse.jl")
-# export Ellipse
+include("shapes/Ellipse.jl")
+export Ellipse
 
 # include("Triangle.jl")
 # export Triangle
@@ -188,3 +188,5 @@ export Circle
 # export bounding_box
 
 end
+
+

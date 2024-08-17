@@ -14,3 +14,5 @@ Base.:(*)(m, s::AbstractShape{T}) where T  = scale(s, m, m)
 Base.:(*)(m, l::Line) = Line(l.θ, m*l.dist) # dont need to convert to segment in this case, compare scale(Line, sx, sy)
 
 Base.:(*)(s, r::Rect{T}) where T = Rect(s*r.tl, s*r.w, s*r.h, r.θ) # dont need Quatrilateral
+
+Base.:(*)(s, e::Ellipse{T}) where T = Ellipse(s * e.center, s * e.radius_x, s * e.radius_y, e.θ)

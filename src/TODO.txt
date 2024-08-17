@@ -11,7 +11,7 @@ Line            :    xx   |      xx      | x  |   x    |   x   |   x   |    x   
 AxisRect        :    xx   |      xx      | x  |   x    |   x   |   x   |    x   |   x   |    x     |              | x 
 Rect            :    xx   |      xx      | x  |   x    |   x   |   x   |    x   |   x   |    x     |              | x
 Circle          :    xx   |      xx      | x  |   x    |   x   |   x   |    x   |   x   |    x     |              | x
-Ellipse         :     y   |       y      |    |        |       |       |        |       |          |              |  
+Ellipse         :     y   |      x(x)    | x  |   x    |   x   |   x   |    x   |   x   |    x     |              | x
 Triangle        :         |              |    |        |       |       |        |       |          |              |  
 Qatrilateral    :     y   |              |    |        |       |       |        |       |          |              |  
 Polygon         :         |              |    |        |       |       |        |       |          |              |  

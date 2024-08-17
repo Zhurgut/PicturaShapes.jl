@@ -76,7 +76,7 @@ end
     @test c1 == c3
     @test c1 ≈ c2
 
-    e1 = Ellipse(1, 1, 1, 2)
+    e1 = Ellipse(1, 1, 1, 2) # TODO test constructors with focal points
     e2 = Ellipse(Point(1, 1), 2, 1, π/2)
     e3 = Ellipse(Point(1, 1-sqrt(3)), Point(1, 1+sqrt(3)), 2)
     e4 = Ellipse(Point(1, 1-sqrt(3)), Point(1, 1+sqrt(3)), 2.1)
@@ -279,27 +279,43 @@ end
 #     @test Point(5, 5) ∉ c
 # end
 
-# @testset "ellipse" begin
-#     e = Ellipse(1, 1, 1, 2)
-#     mj, mn = Shapes.axes(e)
-#     mind = dist(Point(1, 1), e)
-#     for i=1:20
-#         p = Point(1 + 2randn(), 1 + 3randn())
-#         @test dist(p, e) >= mind
-#         @test !((p ∉ e) ⊻ (dist(p, e) >= 0))
-#     end
-#     @test mj ≈ Segment(1, -1, 1, 3)
-#     @test mn ≈ Segment(0, 1, 2, 1)
-#     @test dist(Point(1, -2), e) ≈ 1
-#     @test dist(Point(-1, 1), e) ≈ 1
-#     @test dist(e, Point(3, 1)) ≈ 1
-#     @test dist(e, Point(1, 4)) ≈ 1
-#     @test 0 < dist(e, Point(2, 3)) < 1
-#     @test Point(1.01, 2.9) ∈ e
-#     @test Point(0.9, -1) ∉ e
-    
-#     scale(e - Point(1, 1), 2, 1) ≈ Ellipse(0, 0, 2, 2)
-# end
+@testset "Ellipse dist" begin
+    e = Ellipse(0, 0, 2, 1)
+    p1 = Point(2.2, 0.4)
+    p2 = Point(-2.2, 0.4)
+    p3 = Point(2.2, -0.4)
+    p4 = Point(-2.2, -0.4)
+    println(dist(p1, e))
+    println(dist(p2, e))
+    println(dist(p3, e))
+    println(dist(p4, e))
+
+    e = Ellipse(3, 3, 2, 1)
+    p1 = Point(4, 5)
+    p2 = Point(2, 5)
+    p3 = Point(4, 1)
+    p4 = Point(2, 1)
+    println(dist(p1, e))
+    println(dist(p2, e))
+    println(dist(p3, e))
+    println(dist(p4, e))
+
+    for i=1:20
+        θ = 4*rand()
+        sx = 1/(3*randn())
+        sy = 1/(3*randn())
+        e = shift(Ellipse(0, 0, 2, 1, θ), sx, sy)
+        p1 = shift(rotate(Point(1, 2), θ), sx, sy)
+        p2 = shift(rotate(Point(-1, 2), θ), sx, sy)
+        p3 = shift(rotate(Point(1, -2), θ), sx, sy)
+        p4 = shift(rotate(Point(-1, -2), θ), sx, sy)
+        println(dist(p1, e))
+        println(dist(p2, e))
+        println(dist(p3, e))
+        println(dist(p4, e))
+        # dist(Point(randn(), randn()), e)
+    end
+end
 
 
 # @testset "triangle" begin
