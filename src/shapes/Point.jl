@@ -9,8 +9,6 @@ Base.angle(p::Point{T}) where T = atan(p.y, p.x)
 
 
 dist(p1::Point{T}, p2::Point{S}) where {T,S} = _norm(p2 - p1)
-
-
 Base.:(==)(p1::Point{T}, p2::Point{S})    where {T, S} = (p1.x == p2.x && p1.y == p2.y)
 Base.isapprox(p1::Point{T}, p2::Point{S}) where {T, S} = dist(p1, p2) <= EPS
 

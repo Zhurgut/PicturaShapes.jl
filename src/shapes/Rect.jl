@@ -17,14 +17,8 @@ function sides(r::Rect{T}) where T
     l = Segment(c.bl, c.tl)
     b = Segment(c.br, c.bl)
     r = Segment(c.tr, c.br)
-    return (t=t, l=l, b=b, r=r)
+    return (t, l, b, r)
 end
-
-function diagonals(r::Rect{T}) where T
-    c = corners(r)
-    return Segment(c.tl, c.br), Segment(c.tr, c.bl)
-end
-
 
 
 
@@ -33,19 +27,6 @@ function dist(p::Point{T}, r::Rect{S}) where {T,S}
     return dist(p2, AxisRect(Point(0,0), r.w, r.h))
 end
 
-
-
-
-function Base.:(==)(a::Rect{T}, b::Rect{S}) where {T, S} # w and h might be negative...
-    da1, da2 = diagonals(a)
-    db1, db2 = diagonals(b)
-    return (da1 == db1 && da2 == db2) || (da2 == db1 && da1 == db2)
-end
-function Base.isapprox(a::Rect{T}, b::Rect{S}) where {T, S}
-    da1, da2 = diagonals(a)
-    db1, db2 = diagonals(b)
-    return (da1 ≈ db1 && da2 ≈ db2) || (da2 ≈ db1 && da1 ≈ db2)
-end
 
 
 rotate(r::Rect{T}, θ) where T = Rect(rotate(r.tl, θ), r.w, r.h, r.θ + θ) # around origin, the whole thing!
@@ -68,7 +49,7 @@ end
 function simplify(r::Rect{T}) where T
     θ_aligned_to_axis = round(2r.θ/π)*π/2
     r_aligned = Rect(r.tl, r.w, r.h, θ_aligned_to_axis)
-    if r_aligned ≉ r # kinda expensive, but the only way to be sure
+    if !(r_aligned ≈ r) # kinda expensive, but the only way to be sure
         return r
     end
     # r is pretty much a axis aligned rectangle

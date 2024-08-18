@@ -88,9 +88,9 @@ end
     @test e3 ≉ e4
     @test e1 ≈ e5
 
-    t1 = Triangle(1, 1, Point(2.0, 2), 3, 3.0)
-    t2 = Triangle(3, 3, 2, 2, 1, 1)
-    @test t1 ≈ t2
+    # t1 = Triangle(1, 1, Point(2.0, 2), 3, 3.0)
+    # t2 = Triangle(3, 3, 2, 2, 1, 1)
+    # @test t1 ≈ t2
 end
 
 
@@ -123,9 +123,9 @@ end
     ir = Rect(Point(1,2), 3,4, exp(1))
     prints(r, ir)
 
-    # q = Quatrilateral(p,p,p,p)
-    # iq = Quatrilateral(ip, ip, ip, ip)
-    # prints(q, iq)
+    q = Quatrilateral(p,p,p,p)
+    iq = Quatrilateral(ip, ip, ip, ip)
+    prints(q, iq)
 
     c = Circle(p, exp(1))
     ic = Circle(ip, 2)

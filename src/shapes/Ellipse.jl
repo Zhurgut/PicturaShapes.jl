@@ -18,7 +18,7 @@ ellipse_curve(x, rx, ry) = ry * sqrt(1 - (x/rx)^2)
 
 function closest_point_to_parabola(pt, rx)
     # assuming p.x > 0 and p.y > 0, rx > 1, ry=1
-    # approximate ellipse with 1-(x/rx)^2
+    # approximate ellipse with 1-(x/rx)^2, find closest point on that curve (only considering first quadrant)
 
     if 0.5rx*pt.x - 0.5*rx^2 >= pt.y
         return Point(rx, 0)
@@ -35,7 +35,7 @@ end
 
 function approximately_closest_point(pt, rx)
     # assuming p.x > 0 and p.y > 0, rx > 1, ry=1
-    # approximate ellipse with 1-(x/rx)^2
+    # approximate ellipse with 1-(x/rx)^2, use it to find point which is close to target point
     a = closest_point_to_parabola(pt, rx)
     if a.x == 0 return a end
 
@@ -91,8 +91,6 @@ function axes(e::Ellipse{T}) where T
     return major + e.center, minor + e.center
 end
 
-using Plots
-
 let
     global function dist(p::Point{T}, e::Ellipse{S}) where {T, S}
         if e.radius.y > e.radius.x
@@ -110,7 +108,8 @@ let
 
         # display(closest)
 
-        d = dist(p, closest)
+        # d = dist(p, closest)
+        d = dist(std_pt, closest_std)
         return p ∈ e ? -d : d
     end
 

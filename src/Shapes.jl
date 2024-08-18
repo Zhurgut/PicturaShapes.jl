@@ -33,7 +33,7 @@ end
 
 abstract type AbstractShape{T} end
 abstract type AbstractPolygon{T} <: AbstractShape{T} end # has corners and sides
-export AbstractShape, AbstractPolygon
+abstract type AbstractQuatrilateral{T} <: AbstractPolygon{T} end
 
 struct Point{T} <: AbstractShape{T}
     x::T
@@ -59,13 +59,13 @@ end
     # :corner
     # :center
     # :radius
-struct AxisRect{T} <: AbstractPolygon{T}
+struct AxisRect{T} <: AbstractQuatrilateral{T}
     tl::Point{T}
     w::T
     h::T
 end
 
-struct Rect{T} <: AbstractPolygon{T}
+struct Rect{T} <: AbstractQuatrilateral{T}
     tl::Point{T}
     w::T
     h::T
@@ -89,17 +89,22 @@ struct Ellipse{T} <: AbstractShape{T}
     Ellipse{T}(p::Point{T}, r::Point{T}, θ::Float64) where T = new(p, Point(abs(r.x), abs(r.y)), mod2pi(θ + π) - π)
 end
 
+
 struct Triangle{T} <: AbstractPolygon{T}
     p1::Point{T}
     p2::Point{T}
     p3::Point{T}
 end
 
-struct Quatrilateral{T} <: AbstractPolygon{T}
+struct Quatrilateral{T} <: AbstractQuatrilateral{T}
     p1::Point{T}
     p2::Point{T}
     p3::Point{T}
     p4::Point{T}
+end
+
+struct Polygon{T} <: AbstractPolygon{T}
+    ps::Vector{Point{T}}
 end
 
 
@@ -170,8 +175,8 @@ export AxisRect, corners, sides, center
 include("shapes/Rect.jl")
 export Rect
 
-# include("Quatrilateral.jl") 
-# export Quatrilateral
+include("shapes/Quatrilateral.jl") 
+export Quatrilateral
 
 include("shapes/Circle.jl")
 export Circle
@@ -179,8 +184,8 @@ export Circle
 include("shapes/Ellipse.jl")
 export Ellipse
 
-# include("Triangle.jl")
-# export Triangle
+include("shapes/Triangle.jl")
+export Triangle
 
 # include("intersects.jl")
 

@@ -24,7 +24,7 @@ function sides(a::AxisRect{T}) where T
     l = Segment{T}(c.bl, c.tl)
     b = Segment{T}(c.br, c.bl)
     r = Segment{T}(c.tr, c.br)
-    return (t=t, l=l, b=b, r=r)
+    return (t, l, b, r)
 end
 
 
@@ -32,7 +32,7 @@ end
 
 function dist(p::Point{T}, a::AxisRect{S}) where {T,S}
     s = sides(a)
-    dst = min(dist.((s.t, s.l, s.b, s.r), p)...)
+    dst = min(dist.(s, p)...)
     if p ∈ a
         return -dst
     end

@@ -1,4 +1,4 @@
-
+  
 
 # just overwrite display..
 
@@ -34,7 +34,7 @@ function Base.show(io::IO, ::MIME"text/plain", r::Rect{T}) where T
         x = align.(x)
         w,h = rounded.((w,h))
     end
-    print(io, "Rect{$T}(tl=$(x[1]), tr=$(x[2])), br=$(x[3]), bl=$(x[4]), w=$w, h=$h, θ=$(r.θ))")
+    print(io, "Rect{$T}(tl=($(x[1].x), $(x[1].y)), tr=($(x[2].x), $(x[2].y)), br=($(x[3].x), $(x[3].y)), bl=($(x[4].x), $(x[4].y)), w=$w, h=$h, θ=$(r.θ))")
 end
 
 function Base.show(io::IO, ::MIME"text/plain", c::Circle{T}) where T
