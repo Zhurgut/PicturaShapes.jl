@@ -147,7 +147,7 @@ simplify(s::AbstractShape) = s # some shapes can't be simplified, some can somet
 
 
 
-
+export AbstractShape, AbstractPolygon, AbstractQuatrilateral
 
 
 export align, simplify
