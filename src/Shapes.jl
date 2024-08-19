@@ -151,7 +151,7 @@ simplify(s::AbstractShape) = s # some shapes can't be simplified, some can somet
 
 
 export align, simplify
-export dist, shift, scale, rotate # Base.intersect, Base.in
+export dist, translate, scale, rotate # Base.intersect, Base.in
 
 include("constructors.jl")
 include("operators.jl")
@@ -186,8 +186,7 @@ export Ellipse
 
 include("shapes/Triangle.jl")
 export Triangle
-
-# include("intersects.jl")
+ 
 
 # include("BoundingBoxes.jl")
 # export bounding_box

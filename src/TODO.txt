@@ -21,7 +21,7 @@ intersects:
                   Point | Segment | Line | AxisRect | Rect | Circle | Ellipse | Triangle | Quatrilateral | Polygon
 Point           :   x   |    x    |   x  |     x    |  x   |   x    |    x    |    x     |      x        |    x    
 Segment         :   -   |    x    |   x  |     x    |  x   |   x    |    x    |    x     |      x        |    x    
-Line            :   -   |    -    |   x  |          |      |   x    |         |          |               |         
+Line            :   -   |    -    |   x  |     x    |  x   |   x    |    x    |    x     |      x        |    x    
 AxisRect        :   -   |    -    |   _  |     x    |      |   -    |    -    |          |               |         
 Rect            :   -   |    -    |   _  |     -    |      |   -    |    -    |          |               |         
 Circle          :   -   |    -    |   _  |     -    |   -  |   -    |    -    |    -     |       -       |    -    

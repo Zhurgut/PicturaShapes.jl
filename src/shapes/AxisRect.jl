@@ -56,7 +56,7 @@ end
 
 
 rotate(a::AxisRect{T}, θ) where T = Rect(rotate(a.tl, θ), a.w, a.h, θ)
-shift(a::AxisRect{T}, dx, dy) where T = AxisRect(a.tl + Point(dx, dy), a.w, a.h)
+translate(a::AxisRect{T}, dx, dy) where T = AxisRect(a.tl + Point(dx, dy), a.w, a.h)
 scale(a::AxisRect{T}, sx, sy) where T = AxisRect(scale(a.tl, sx, sy), sx * a.w, sy * a.h)
 
 

@@ -68,7 +68,7 @@ Base.isapprox(l1::Segment{T}, l2::Segment{S}) where {T,S} = (l1.p1 ≈  l2.p1 &&
 
 
 rotate(l::Segment{T}, θ) where T = Segment(rotate(l.p1, θ), rotate(l.p2, θ))
-shift(l::Segment{T}, dx, dy)  where T = Segment(shift(l.p1, dx, dy), shift(l.p2, dx, dy))
+translate(l::Segment{T}, dx, dy)  where T = Segment(translate(l.p1, dx, dy), translate(l.p2, dx, dy))
 scale(l::Segment{T}, sx, sy) where T = Segment(scale(l.p1, sx, sy), scale(l.p2, sx, sy))
 
 

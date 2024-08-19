@@ -41,7 +41,7 @@ end
 
 
 rotate(t::Quatrilateral{T}, θ) where T =     Quatrilateral(rotate(t.p1, θ),     rotate(t.p2, θ),     rotate(t.p3, θ),     rotate(t.p4, θ))
-shift(t::Quatrilateral{T}, dx, dy) where T = Quatrilateral(shift(t.p1, dx, dy), shift(t.p2, dx, dy), shift(t.p3, dx, dy), shift(t.p4, dx, dy))
+translate(t::Quatrilateral{T}, dx, dy) where T = Quatrilateral(translate(t.p1, dx, dy), translate(t.p2, dx, dy), translate(t.p3, dx, dy), translate(t.p4, dx, dy))
 scale(t::Quatrilateral{T}, sx, sy) where T = Quatrilateral(scale(t.p1, sx, sy), scale(t.p2, sx, sy), scale(t.p3, sx, sy), scale(t.p4, sx, sy))
 
 

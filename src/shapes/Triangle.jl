@@ -40,7 +40,7 @@ function Base.isapprox(t1::Triangle{T}, t2::Triangle{S}) where {T,S}
 end
 
 rotate(t::Triangle{T}, θ) where T         = Triangle(rotate(t.p1, θ), rotate(t.p2, θ), rotate(t.p3, θ))
-shift(t::Triangle{T}, dx, dy) where T = Triangle(shift(t.p1, dx, dy), shift(t.p2, dx, dy), shift(t.p3, dx, dy))
+translate(t::Triangle{T}, dx, dy) where T = Triangle(translate(t.p1, dx, dy), translate(t.p2, dx, dy), translate(t.p3, dx, dy))
 scale(t::Triangle{T}, sx, sy) where T     = Triangle(scale(t.p1, sx, sy), scale(t.p2, sx, sy), scale(t.p3, sx, sy))
 
 

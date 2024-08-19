@@ -6,7 +6,7 @@ Base.:(-)(p::Point{T}) where T = Point(-p.x, -p.y)
 Base.:(-)(p1::Point{T}, p2::Point{S}) where {T, S} = p1 + (-p2)
 Base.:(*)(s, p::Point{T}) where T  = Point(s * p.x, s * p.y)
 
-Base.:(+)(p::Point{T}, s) where T = shift(s, p.x, p.y)
+Base.:(+)(p::Point{T}, s) where T = translate(s, p.x, p.y)
 Base.:(-)(s, p::Point{T}) where T = s + (-p)
 Base.:(*)(m, s::AbstractShape{T}) where T  = scale(s, m, m)
 

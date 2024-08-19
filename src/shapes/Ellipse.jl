@@ -172,8 +172,11 @@ function Base.isapprox(e1::Ellipse{T}, e2::Ellipse{S}) where {T, S}
 end
 
 rotate(e::Ellipse{T}, θ) where T = Ellipse(rotate(e.center, θ), e.radius.x, e.radius.y, e.θ + θ)
-shift(e::Ellipse{T}, dx, dy) where T = Ellipse(e.center + Point(dx, dy), e.radius.x, e.radius.y, e.θ)
+translate(e::Ellipse{T}, dx, dy) where T = Ellipse(e.center + Point(dx, dy), e.radius.x, e.radius.y, e.θ)
 function scale(e::Ellipse{T}, sx, sy) where T
+    if e.θ == 0
+        return Ellipse(scale(e.center, sx, sy), sx*e.radius.x, sy*e.radius.y)
+    end
     mj, mn = axes(e)
     mj, mn = mj-e.center, mn-e.center
     mj, mn = scale(mj, sx, sy), scale(mn, sx, sy)
@@ -201,25 +204,4 @@ function simplify(e::Ellipse)
     end
     return e
 end
-
-
-let
-    function transform_back(i, e)
-        s = scale(i, e.radius.x, e.radius.y)
-        r = rotate(s, e.θ)
-        return r + e.center
-    end
-
-    global function Base.intersect(e::Ellipse{T}, l::Line) where T
-        lt = l - e.center
-        lr = rotate(lt, -e.θ)
-        ls = scale(lr, 1/e.radius.x, 1/e.radius.y)
-        i = intersect_with_unit_circle(ls)
-        if isnothing(i)
-            return nothing
-        end
-        return transform_back(i, e) # function barrier trick
-    end
-end
-
 

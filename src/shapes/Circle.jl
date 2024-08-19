@@ -45,7 +45,7 @@ Base.isapprox(c1::Circle{T}, c2::Circle{S}) where {T, S} = c1.center ≈ c2.cent
 
 
 rotate(c::Circle{T}, θ) where T = Circle(rotate(c.center, θ), c.radius)
-shift(c::Circle{T}, dx, dy) where T = Circle(c.center + Point(dx, dy), c.radius)
+translate(c::Circle{T}, dx, dy) where T = Circle(c.center + Point(dx, dy), c.radius)
 scale(c::Circle{T}, sx, sy) where T = Ellipse(scale(c.center, sx, sy), sx * c.radius, sy * c.radius)
 
 

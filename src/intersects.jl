@@ -5,7 +5,7 @@ Base.intersect(::Nothing, s::AbstractShape) = nothing
 
 Base.intersect(p::Point{T}, s::AbstractShape) where T = p ∈ s ? p : nothing
 
-function Base.intersect(s::Segment{T}, f::AbstractShape) where T
+function Base.intersect(s::Segment{T}, f::AbstractShape{S}) where {S,T}
     i = f ∩ Line(s)
     if i isa Segment
         return overlapping_segment(i, s)
@@ -26,6 +26,40 @@ function Base.intersect(s::Segment{S}, l::Line) where S
 end
 
 
+
+
+function Base.intersect(q::AbstractPolygon{T}, l::Line) where T
+    s = sides(q)
+    i = l .∩ s
+    if all(isnothing, i) return nothing end
+    if any(x->(x isa Segment), i)
+        for t in i
+            if t isa Segment
+                return t
+            end
+        end
+    end
+    p = filter(x->(x isa Point), i)
+    if length(p) == 1 return p[1] end
+    if length(p) == 2
+        if p[1] ≈ p[2] return 0.5(p[1] + p[2]) end
+        return Segment(p[1], p[2])
+    end
+    
+    like_p1_idx = p .≈ p[1]
+    like_p1 = p[like_p1_idx]
+    unlike_p1 = p[.!like_p1_idx]
+
+    if unlike_p1 == ()
+        return (1/length(p))*sum(p)
+    end
+
+    p1 = (1/length(like_p1)) * sum(like_p1)
+    p2 = (1/length(unlike_p1)) * sum(unlike_p1)
+    return Segment(p1, p2)
+end
+
+
 function Base.intersect(c::Circle{T}, l::Line) where T
     s = l - c.center
 
@@ -36,30 +70,23 @@ function Base.intersect(c::Circle{T}, l::Line) where T
     return c.radius * i + c.center
 end
 
+function Base.intersect(e::Ellipse{T}, l::Line) where T
+    er = rotate(e, -e.θ)
+    lr = rotate(l, -e.θ)
+    es = scale(er, e.radius.y/e.radius.x, 1)
+    ls = scale(lr, e.radius.y/e.raidus.x, 1)
 
+    c = Circle(es.center, es.radius.x)
+    i = c ∩ ls
 
+    if isnothing(i) return i end
 
-# function Base.intersect(l::Line, r::AbstractQuatrilateral{R}) where R
-#     s = sides(r)
-#     i = (s.t ∩ l, s.l ∩ l, s.b ∩ l, s.r ∩ l) 
-#     p = filter(x->x isa Point, i)
-#     if length(p) == 0
-#         return nothing
-#     elseif length(p) == 1
-#         return p[1]
-#     elseif length(p) == 2
-#         return Segment(p[1], p[2])
-#     else
-#         p = p .|> (pt->Point(round(pt.x, digits=1), round(pt.y, digits=1))) |> Set |> Tuple
-#         if length(p) == 1
-#             return p[1]
-#         elseif length(p) == 2
-#             return Segment(p[1], p[2])
-#         else
-#             error("what is going on?")
-#         end
-#     end
-# end
+    is = scale(i, e.radius.x/e.radius.y, 1) # function barrier trick inconvenient... hmm
+    ir = rotate(is, e.θ)
+
+    return ir
+end
+
 
 
 

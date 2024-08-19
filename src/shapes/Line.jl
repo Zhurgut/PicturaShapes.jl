@@ -28,7 +28,7 @@ end
 
 
 rotate(l::Line, θ) = Line(l.θ + θ, l.dist)
-function shift(l::Line, dx, dy) # we dont want to recalculate the angle, otherwise the new line is not perfectly parallel 
+function translate(l::Line, dx, dy) # we dont want to recalculate the angle, otherwise the new line is not perfectly parallel 
     q = characteristic_point(l)
     p = q + Point(dx, dy)
     s = project(p, l)

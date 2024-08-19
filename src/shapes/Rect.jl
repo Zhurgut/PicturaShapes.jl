@@ -30,7 +30,7 @@ end
 
 
 rotate(r::Rect{T}, θ) where T = Rect(rotate(r.tl, θ), r.w, r.h, r.θ + θ) # around origin, the whole thing!
-shift(r::Rect{T}, dx, dy) where T = Rect(r.tl + Point(dx, dy), r.w, r.h, r.θ)
+translate(r::Rect{T}, dx, dy) where T = Rect(r.tl + Point(dx, dy), r.w, r.h, r.θ)
 function scale(r::Rect{T}, sx, sy) where T
     c = corners(r)
     if sx == sy
