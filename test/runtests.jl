@@ -2,6 +2,7 @@
 using Test
 using Shapes
 using LinearAlgebra
+using Pictura
 
 @testset "set_eps" begin
     old_eps = Shapes.EPS
@@ -93,6 +94,56 @@ end
     # @test t1 ≈ t2
 end
 
+@testset "dist, translate, scale, rotate" begin
+    function run(s)
+
+        @setup begin
+            size(600, 400)
+        end
+
+        @drawloop begin
+
+            f = 50
+
+            x = s
+            if framecount() < f
+                x = translate(s, framecount() - f/2, 50 * sin(framecount() / f))
+            elseif framecount() < 2f
+                x = scale(s, 0.6sin(framecount() / f) + 1, (framecount() - f + 1) / (1.5f))
+            else
+                x = rotate(s, framecount() / 8)
+            end
+
+            for c = 1:width(), r = 1:height()
+                p = Point(c - width()/2, r - height()/2)
+                if isnan(2 * abs(dist(p, x)) / width())
+                    println(p)
+                    println(x)
+                    println(dist(p, x))
+                end
+                strokecolor(2 * abs(dist(p, x)) / width())
+                point(c-1, r-1)
+            end
+            
+            if framecount() == 3f
+                noloop()
+            end
+        end
+    end
+
+    p1 = Point(-70, -70)
+    p2 = Point(100, 50)
+    run(p1)
+    run(Segment(p1, p2))
+    run(Line(p1, p2))
+    run(AxisRect(p1.x, p1.y, 200, 100))
+    run(Rect(p1.x, p1.y, 200, 100, 0.3))
+    run(Circle(p1, 100))
+    run(Ellipse(p1, 200, 100, 0.3))
+    run(Triangle(p1, p2, Point(-20, 80)))
+    run(Quatrilateral(p1, Point(70, -60), p2, Point(-20, 80)))
+end
+
 
 @testset "pretty print" begin
     function prints(s, is)
@@ -123,10 +174,6 @@ end
     ir = Rect(Point(1,2), 3,4, exp(1))
     prints(r, ir)
 
-    q = Quatrilateral(p,p,p,p)
-    iq = Quatrilateral(ip, ip, ip, ip)
-    prints(q, iq)
-
     c = Circle(p, exp(1))
     ic = Circle(ip, 2)
     prints(c, ic)
@@ -134,6 +181,14 @@ end
     e = Ellipse(p, 1/3, 1/6, exp(1))
     ie = Ellipse(ip, 3, 6, exp(1))
     prints(e, ie)
+
+    t  = Triangle(6/2, 5/3, 4/4, 3/5, 2/6, 1/7)
+    it = Triangle(((6/2, 5/3, 4/4, 3/5, 2/6, 1/7) .|> round .|> Int)...)
+    prints(t, it)
+
+    q = Quatrilateral(p,p,p,p)
+    iq = Quatrilateral(ip, ip, ip, ip)
+    prints(q, iq)
 
 end
 

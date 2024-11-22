@@ -26,7 +26,7 @@ function closest_point_to_parabola(pt, rx)
 
     p = rx^2 * (rx^2/2 + pt.y - 1)
     q = -0.5 * rx^4 * pt.x
-    R = sqrt(q^2/4 + p^3/27)
+    R = sqrt(max(0, q^2/4 + p^3/27))
     
     x = cbrt(-q/2 + R) + cbrt(-q/2 - R)
     
@@ -104,12 +104,12 @@ let
         init = approximately_closest_point(std_pt, rx)
 
         closest_std = optimize(init, rx, std_pt)
-        closest = rotate(e.radius.y * scale(closest_std, sx, sy), e.θ) + e.center
+        # closest = rotate(e.radius.y * scale(closest_std, sx, sy), e.θ) + e.center
 
         # display(closest)
 
         # d = dist(p, closest)
-        d = dist(std_pt, closest_std)
+        d = e.radius.y * dist(std_pt, closest_std)
         return p ∈ e ? -d : d
     end
 

@@ -30,9 +30,9 @@ end
 
 
 
-function dist(p::Point{T}, a::AxisRect{S}) where {T,S}
-    s = sides(a)
-    dst = min(dist.(s, p)...)
+function dist(p::Point{T}, a::AxisRect{S}) where {T,S} # TODO can be optimized
+    s = sides(a) 
+    dst = min((x->dist(x, p)).(s)...)
     if p ∈ a
         return -dst
     end

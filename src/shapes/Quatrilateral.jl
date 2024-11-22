@@ -15,7 +15,7 @@ end
 
 function dist(p::Point{T}, t::AbstractPolygon{S}) where {T, S}
     s = sides(t)
-    d = min(dist.(s, p)...)
+    d = min((x->dist(x, p)).(s)...)
     return p ∈ t ? -d : d
 end
 

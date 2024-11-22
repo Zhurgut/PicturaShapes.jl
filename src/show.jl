@@ -43,3 +43,25 @@ function Base.show(io::IO, ::MIME"text/plain", c::Circle{T}) where T
     end
     print(io, "Circle{$T}(($(c.center.x), $(c.center.y)), radius=$(c.radius))")
 end
+
+function Base.show(io::IO, ::MIME"text/plain", e::Ellipse{T}) where T
+    if T <: AbstractFloat
+        e = align(e)
+    end
+    print(io, "Ellipse{$T}(($(e.center.x), $(e.center.y)), radius_x=$(rounded(e.radius.x)), radius_y=$(rounded(e.radius.y)), θ=$(e.θ))")
+end
+
+function Base.show(io::IO, ::MIME"text/plain", t::Triangle{T}) where T
+    if T <: AbstractFloat
+        t = align(t)
+    end
+    print(io, "Triangle{$T}(($(t.p1.x), $(t.p1.y)), ($(t.p2.x), $(t.p2.y)), ($(t.p3.x), $(t.p3.y)))")
+end
+
+function Base.show(io::IO, ::MIME"text/plain", q::Quatrilateral{T}) where T
+    if T <: AbstractFloat
+        q = align(q)
+    end
+    print(io, "Quatrilateral{$T}(($(q.p1.x), $(q.p1.y)), ($(q.p2.x), $(q.p2.y)), ($(q.p3.x), $(q.p3.y)), ($(q.p4.x), $(q.p4.y)))")
+end
+

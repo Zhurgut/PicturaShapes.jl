@@ -24,6 +24,8 @@ function set_eps(eps::Real)
     end
 end
 
+rounded(x::Integer) = x
+
 function rounded(x)
     global DIGITS
     return round(x, digits=DIGITS)
@@ -157,6 +159,9 @@ include("constructors.jl")
 include("operators.jl")
 include("show.jl")
 include("intersects.jl")
+
+include("bounding_boxes.jl")
+export bounding_box
 
 
 
