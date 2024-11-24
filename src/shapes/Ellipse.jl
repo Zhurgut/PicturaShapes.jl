@@ -192,7 +192,7 @@ function Base.in(p::Point{T}, e::Ellipse{S}) where {T, S}
     return ps ∈ Circle(Point(0,0), 1)
 end
 
-align(e::Ellipse) = Ellipse(align(e.center), e.radius.x, e.radius.y, e.θ)
+align(e::Ellipse) = Ellipse(align(e.center), rounded(e.radius.x), rounded(e.radius.y), e.θ)
 function simplify(e::Ellipse)
     f1, f2, rx = focal_points(e)
     if f1 ≈ f2

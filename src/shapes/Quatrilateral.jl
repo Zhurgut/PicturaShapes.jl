@@ -1,5 +1,9 @@
 # 4 sided polygon
 
+function points(r::AbstractQuatrilateral{T}) where T
+    c = corners(r)
+    return (c.tl, c.tr, c.bl, c.br)
+end
 
 corners(t::Quatrilateral{T}) where T = (tl=t.p1, tr=t.p2, bl=t.p4, br=t.p3)
 

@@ -2,19 +2,20 @@
 x implementation done
 xx testing done as well
 y only testing done
+* kinda done, but not optimally / only general solution
 
 
-                  display | constructors | == | approx | shift | scale | rotate | align | simplify | bounding box | ∈ 
-Point           :    xx   |      xx      | xx |   xx   |   xx  |   xx  |   xx   |   x   |    x     |              | x
-Segment         :    xx   |      xx      | x  |   x    |   xx  |   xx  |   xx   |   x   |    x     |              | x
-Line            :    xx   |      xx      | x  |   x    |   xx  |   xx  |   xx   |   x   |    x     |              | x
-AxisRect        :    xx   |      xx      | x  |   x    |   xx  |   xx  |   xx   |   x   |    x     |              | x 
-Rect            :    xx   |      xx      | x  |   x    |   xx  |   xx  |   xx   |   x   |    x     |              | x
-Circle          :    xx   |      xx      | x  |   x    |   xx  |   xx  |   xx   |   x   |    x     |              | x
-Ellipse         :    xx   |      x(x)    | x  |   x    |   xx  |   xx  |   xx   |   x   |    x     |              | x
-Triangle        :    xx   |      x       | x  |   x    |   xx  |   xx  |   xx   |   x   |    x     |              | x
-Qatrilateral    :    xx   |      x       | x  |   x    |   xx  |   xx  |   xx   |   x   |    x     |              | x
-Polygon         :         |              |    |        |       |       |        |       |          |              |  
+                  display | constructors | == | approx | shift | scale | rotate | align | simplify | aligned_bb | bounding box | ∈ 
+Point           :    xx   |      xx      | xx |   xx   |   xx  |   xx  |   xx   |  xx   |    x     |      x     |      x       | x
+Segment         :    xx   |      xx      | xx |   xx   |   xx  |   xx  |   xx   |  xx   |    x     |      x     |      x       | x
+Line            :    xx   |      xx      | xx |   xx   |   xx  |   xx  |   xx   |  xx   |    x     |      -     |      -       | x
+AxisRect        :    xx   |      xx      | xx |   xx   |   xx  |   xx  |   xx   |  xx   |    x     |      x     |      x       | x 
+Rect            :    xx   |      xx      | xx |   xx   |   xx  |   xx  |   xx   |  xx   |    x     |      x     |      x       | x
+Circle          :    xx   |      xx      | xx |   xx   |   xx  |   xx  |   xx   |  xx   |    x     |      x     |      x       | x
+Ellipse         :    xx   |      x(x)    | xx |   xx   |   xx  |   xx  |   xx   |  xx   |    x     |      x     |      x       | x
+Triangle        :    xx   |      x       | xx |   xx   |   xx  |   xx  |   xx   |  xx   |    x     |      x     |      *       | x
+Qatrilateral    :    xx   |      x       | xx |   xx   |   xx  |   xx  |   xx   |  xx   |    x     |      x     |      *       | x
+Polygon         :         |              |    |        |       |       |        |       |          |      x     |      *       |  
 
 
 intersects:
@@ -43,6 +44,8 @@ Ellipse         :   -   |    -    |   _  |     -    |   -  |   -    |         | 
 Triangle        :   -   |    -    |   _  |     -    |   -  |   -    |    -    |          |               |         
 Qatrilateral    :   -   |    -    |   _  |     -    |   -  |   -    |    -    |    -     |               |         
 Polygon         :   -   |    -    |   _  |     -    |   -  |   -    |    -    |    -     |       -       |         
+
+dist: consider edge cases, degenerate ellipse, segment, etc...
 
 rendering...
 

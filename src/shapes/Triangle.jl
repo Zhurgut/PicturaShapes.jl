@@ -1,5 +1,5 @@
 
-
+points(t::Triangle{T}) where T = (t.p1, t.p2, t.p3)
 
 function sides(t::Triangle{T}) where T
     return (

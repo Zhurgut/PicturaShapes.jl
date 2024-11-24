@@ -1,5 +1,6 @@
 
 
+
 function center(r::Rect{T}) where T
     c = corners(r)
     return 0.5(c.tl + c.br)

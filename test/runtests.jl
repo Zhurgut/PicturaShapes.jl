@@ -121,7 +121,12 @@ end
                     println(x)
                     println(dist(p, x))
                 end
-                strokecolor(2 * abs(dist(p, x)) / width())
+                d = dist(p, x)
+                if d < 0
+                    strokecolor(0, 2 * abs(d) / width(), 2 * abs(d) / width())
+                else
+                    strokecolor(2 * abs(d) / width())
+                end
                 point(c-1, r-1)
             end
             
@@ -190,6 +195,60 @@ end
     iq = Quatrilateral(ip, ip, ip, ip)
     prints(q, iq)
 
+end
+
+@testset "==, approx, align" begin
+    e = 1e-12
+    
+    p1 = Point(0.2, 0.2)
+    p2 = Point(0.2+e, 0.2+e)
+    p3 = Point(0.3, 0.5)
+    p4 = Point(0.3+e, 0.5+e)
+    
+    s1 = Segment(p1, p3)
+    s2 = Segment(p2, p4)
+
+    l1 = Line(p1, p3)
+    l2 = Line(p2, p4)
+
+    a1 = AxisRect(p1, p3)
+    a2 = AxisRect(p2, p4)
+
+    r1 = rotate(a1, 0.01)
+    r2 = rotate(a2, 0.01)
+
+    c1 = Circle(p1, 1)
+    c2 = Circle(p2, 1+e)
+
+    e1 = Ellipse(p1, 2, 1, 0.01)
+    e2 = Ellipse(p2, 2+e, 1+e, 0.01)
+
+    t1 = Triangle(p1, p3, Point(0, 1))
+    t2 = Triangle(Point(0, 1), p2, p4)
+
+    q1 = Quatrilateral(p1, p3, Point(0, 1), Point(0, 0.5))
+    q2 = Quatrilateral(p4, Point(0+e, 1+e), Point(0+e, 0.5+e), p2)
+
+    function f(s1, s2)
+        @test s1 != s2
+        @test s1 == s1
+        @test s1 ≈ s2
+        @test align(s1) == align(s2)
+    end
+
+    f(p1, p2)
+    f(s1, s2)
+
+    @test l1 != l2
+    @test l1 == l1
+    @test align(l1) == align(l2)
+    
+    f(a1, a2)
+    f(r1, r2)
+    f(c1, c2)
+    f(e1, e2)
+    f(t1, t2)
+    f(q1, q2)
 end
 
 @testset "points" begin

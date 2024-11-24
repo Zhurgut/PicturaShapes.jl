@@ -50,7 +50,7 @@ scale(c::Circle{T}, sx, sy) where T = Ellipse(scale(c.center, sx, sy), sx * c.ra
 
 
 
-align(c::Circle) = Circle(align(c.center), c.radius)
+align(c::Circle) = Circle(align(c.center), rounded(c.radius))
 simplify(c::Circle) = c.radius < EPS ? c.center : c
 
 

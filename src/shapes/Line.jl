@@ -77,6 +77,8 @@ function Base.intersect(l1::Line, l2::Line)
 end
 
 
+align(l::Line) = Line(align(Segment(l))) 
+
 
 
 
