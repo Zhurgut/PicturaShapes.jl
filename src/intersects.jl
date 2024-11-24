@@ -30,7 +30,7 @@ end
 
 function Base.intersect(q::AbstractPolygon{T}, l::Line) where T
     s = sides(q)
-    i = l .∩ s
+    i = (x->x ∩ l).(s)
     if all(isnothing, i) return nothing end
     if any(x->(x isa Segment), i)
         for t in i
@@ -46,7 +46,7 @@ function Base.intersect(q::AbstractPolygon{T}, l::Line) where T
         return Segment(p[1], p[2])
     end
     
-    like_p1_idx = p .≈ p[1]
+    like_p1_idx = [p_i ≈ p[1] for p_i in p]
     like_p1 = p[like_p1_idx]
     unlike_p1 = p[.!like_p1_idx]
 
@@ -74,7 +74,7 @@ function Base.intersect(e::Ellipse{T}, l::Line) where T
     er = rotate(e, -e.θ)
     lr = rotate(l, -e.θ)
     es = scale(er, e.radius.y/e.radius.x, 1)
-    ls = scale(lr, e.radius.y/e.raidus.x, 1)
+    ls = scale(lr, e.radius.y/e.radius.x, 1)
 
     c = Circle(es.center, es.radius.x)
     i = c ∩ ls
