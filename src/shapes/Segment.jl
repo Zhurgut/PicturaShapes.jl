@@ -39,6 +39,13 @@ function overlapping_segment(l1::Segment{T}, l2::Segment{S}) where {T,S}
     return Segment(ll.p1 + start*dir, ll.p1 + stop*dir)
 end
 
+function is_on_right_side(s::Segment{T1}, p::Point{T2}) where {T1, T2}
+    d1 = s.p2 - s.p1
+    d2 = p - s.p1
+    v = d1.x * d2.y - d1.y * d2.x
+    return v >= 0
+end
+
 
 
 

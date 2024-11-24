@@ -161,7 +161,7 @@ include("show.jl")
 include("intersects.jl")
 
 include("bounding_boxes.jl")
-export bounding_box
+export aligned_bounding_box, bounding_box
 
 
 

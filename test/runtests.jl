@@ -94,11 +94,12 @@ end
     # @test t1 ≈ t2
 end
 
-@testset "dist, translate, scale, rotate" begin
+@testset "dist, translate, scale, rotate, boxes" begin
     function run(s)
 
         @setup begin
-            size(600, 400)
+            size(600, 400, :fast)
+            nofill()
         end
 
         @drawloop begin
@@ -129,6 +130,13 @@ end
                 end
                 point(c-1, r-1)
             end
+
+            if !(x isa Line)
+                strokecolor(255, 0, 0, 150)
+                draw(aligned_bounding_box(x, 10) + Point(width()/2, height()/2))
+                strokecolor(0, 255, 0, 150)
+                draw(bounding_box(x, 10) + Point(width()/2, height()/2))
+            end
             
             if framecount() == 3f
                 noloop()
@@ -146,7 +154,9 @@ end
     run(Circle(p1, 100))
     run(Ellipse(p1, 200, 100, 0.3))
     run(Triangle(p1, p2, Point(-20, 80)))
+    run(Triangle(Point(-20, 80), p2, p1))
     run(Quatrilateral(p1, Point(70, -60), p2, Point(-20, 80)))
+    run(Quatrilateral(Point(-20, 80), p2, Point(70, -60), p1))
 end
 
 

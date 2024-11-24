@@ -13,7 +13,8 @@ end
 
 function aligned_bounding_box(a::AxisRect{T}, slack=0) where T
     if slack==0 return a end
-    return AxisRect(a.tl - Point(slack, slack), a.w+2slack, a.h+2slack)
+    a2 = AxisRect(center(a), abs(a.w), abs(a.h), mode=:center)
+    return AxisRect(a2.tl - Point(slack, slack), a2.w+2slack, a2.h+2slack)
 end
 
 function aligned_bounding_box(c::Circle{T},   slack=0) where T
@@ -59,11 +60,32 @@ function bounding_box(r::Rect{T}, slack=0) where T
 end
 
 function bounding_box(s::Segment{T}, slack=0) where T
-    return bounding_box(Rect(0.5(s.p1 + s.p2), length(s), 0, angle(s.p2 - s.p1)), slack)
+    return bounding_box(Rect(0.5(s.p1 + s.p2), length(s), 0, angle(s.p2 - s.p1), mode=:center), slack)
 end
 
 function bounding_box(e::Ellipse{T}, slack=0) where T
     return bounding_box(Rect(e.center, e.radius.x, e.radius.y, e.θ, mode=:radius), slack)
+end
+
+function bounding_box(t::Triangle{T}, slack=0) where T
+    ss = sides(t)
+    ls = length.(ss)
+    i = argmax(ls)
+    p1 = ss[i].p1
+    p2 = ss[i].p2
+    if i == 1
+        p3 = t.p3
+    elseif i == 2
+        p3 = t.p1
+    else
+        p3 = t.p2
+    end
+    w = length(ss[i])
+    h = dist(ss[i], p3)
+    if !is_on_right_side(ss[i], p3)
+        h = -h
+    end
+    return bounding_box(Rect(p1, w, h, angle(p2 - p1)), slack)
 end
 
 
