@@ -4,12 +4,12 @@
 
 
 # orthogonally project the point onto the line
-project(p::Point{T}, l::Line) where T = project(p, Segment(l))
-characteristic_point(l::Line) = project(Point(0,0), l) # Point on line closest to origin
+project(p::Point, l::Line)    = project(p, Segment(l))
+characteristic_point(l::Line) = rotate(Point(l.dist, 0), l.θ) # Point on line closest to origin
 
 
 
-dist(p::Point{T}, l::Line) where T = dist(p, project(p, l))
+dist(p::Point, l::Line) = dist(p, project(p, l))
 
 
 function Base.:(==)(l1::Line, l2::Line)
@@ -20,31 +20,21 @@ function Base.:(==)(l1::Line, l2::Line)
 end
 function Base.isapprox(l1::Line, l2::Line)
     p1, p2 = characteristic_point.((l1, l2))
-    if p1 ≉ p2 return false end
-    
-    return mod(l1.θ, π) == mod(l2.θ, π)
-end
-
-
-
-rotate(l::Line, θ) = Line(l.θ + θ, l.dist)
-function translate(l::Line, dx, dy) # we dont want to recalculate the angle, otherwise the new line is not perfectly parallel 
-    q = characteristic_point(l)
-    p = q + Point(dx, dy)
-    s = project(p, l)
-    q_new = q + p - s
-    dst_new = magnitude(q_new)
-    if dist(q, q_new) > max(l.dist, dst_new) # the line moved through the origin
-        return Line(l.θ, -dst_new) # negative distance will rotate the angle by 180°
-    else # otherwise line still on the same side of the origin
-        return Line(l.θ, dst_new) 
+    if p1 ≈ Point(0,0) ≈ p2
+        return mod(l1.θ, π) == mod(l2.θ, π)
     end
+    return p1 ≈ p2
 end
-scale(l::Line, sx, sy) = Line(scale(Segment(l), sx, sy))
 
 
 
-Base.in(p::Point{T}, l::Line) where T = dist(p, l) < EPS
+rotate(l::Line, θ)         = Line(l.θ + θ, l.dist)
+translate(l::Line, dx, dy) = Line(translate(Segment(l), dx, dy))
+scale(l::Line, sx, sy)     = Line(scale(Segment(l), sx, sy))
+
+
+
+Base.in(p::Point, l::Line) = dist(p, l) < PREC
 
 
 function Base.intersect(l1::Line, l2::Line)
@@ -77,7 +67,10 @@ function Base.intersect(l1::Line, l2::Line)
 end
 
 
-align(l::Line) = Line(align(Segment(l))) 
+function align(l::Line)
+    p = align(characteristic_point(l))
+    return Line(angle(p), dist(p, Point(0,0))) 
+end
 
 
 

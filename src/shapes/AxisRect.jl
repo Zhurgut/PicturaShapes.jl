@@ -5,12 +5,11 @@
 
 
 
-center(a::AxisRect{T}) where T = Point(a.tl.x + 0.5*a.w, a.tl.y + 0.5*a.h)
+center(a::AxisRect) = Point(a.tl.x + 0.5*a.w, a.tl.y + 0.5*a.h)
 
-function corners(a::AxisRect{T}) where T
-    x1, x2, y1, y2 = a.tl.x, a.tl.x + a.w, a.tl.y, a.tl.y + a.h
-    l, r, t, b = min(x1, x2), max(x1, x2), min(y1, y2), max(y1, y2)
-    tl = Point(l, t)
+function corners(a::AxisRect)
+    l, r, t, b = a.tl.x, a.tl.x + a.w, a.tl.y, a.tl.y + a.h
+    tl = a.tl
     tr = Point(r, t)
     bl = Point(l, b)
     br = Point(r, b)
@@ -18,19 +17,19 @@ function corners(a::AxisRect{T}) where T
 end
 
 # sides go down or to the right
-function sides(a::AxisRect{T}) where T
+function sides(a::AxisRect)
     c = corners(a)
-    t = Segment{T}(c.tl, c.tr)
-    l = Segment{T}(c.bl, c.tl)
-    b = Segment{T}(c.br, c.bl)
-    r = Segment{T}(c.tr, c.br)
+    t = Segment(c.tl, c.tr)
+    l = Segment(c.bl, c.tl)
+    b = Segment(c.br, c.bl)
+    r = Segment(c.tr, c.br)
     return (t, l, b, r)
 end
 
 
 
 
-function dist(p::Point{T}, a::AxisRect{S}) where {T,S} # TODO can be optimized
+function dist(p::Point, a::AxisRect) # TODO can be optimized
     s = sides(a) 
     dst = min((x->dist(x, p)).(s)...)
     if p ∈ a
@@ -42,7 +41,7 @@ end
 
 
 
-function Base.:(==)(a1::AxisRect{T}, a2::AxisRect{S}) where {T,S}
+function Base.:(==)(a1::AxisRect, a2::AxisRect)
     c1 = corners(a1)
     c2 = corners(a2)
     return c1.tl == c2.tl && c1.br == c2.br
@@ -55,27 +54,27 @@ end
 
 
 
-rotate(a::AxisRect{T}, θ) where T = Rect(rotate(a.tl, θ), a.w, a.h, θ)
-translate(a::AxisRect{T}, dx, dy) where T = AxisRect(a.tl + Point(dx, dy), a.w, a.h)
-scale(a::AxisRect{T}, sx, sy) where T = AxisRect(scale(a.tl, sx, sy), sx * a.w, sy * a.h)
+rotate(a::AxisRect, θ)         = rect(rotate(a.tl, θ), a.w, a.h, θ) # this constructor will go to base constuctor, here we know w and h are positive
+translate(a::AxisRect, dx, dy) = AxisRect(translate(a.tl, dx, dy), a.w, a.h)
+scale(a::AxisRect, sx, sy)     = AxisRect(scale(a.tl, sx, sy), sx * a.w, sy * a.h)
 
 
 
 
-function align(a::AxisRect{T}) where T
+function align(a::AxisRect)
     c = corners(a)
     AxisRect(align(c.tl), align(c.br))
 end
 
-function simplify(a::AxisRect{T}) where T
+function simplify(a::AxisRect)
     c = corners(a)
     if c.tl ≈ c.br return 0.5(c.tl + c.br) end
 
     t, r, b, l = c.tl.y, c.br.x, c.br.y, c.tl.x
-    if abs(t - b) < EPS
+    if abs(t - b) < PREC
         y = 0.5(t + b)
         return Segment(l, y, r, y)
-    elseif abs(r - l) < EPS
+    elseif abs(r - l) < PREC
         x = 0.5(r + l)
         return Segment(x, t, x, b)
     end
@@ -85,14 +84,14 @@ end
 
 
 
-function Base.in(p::Point{T}, a::AxisRect{S}) where {T, S}
+function Base.in(p::Point, a::AxisRect)
     c = corners(a)
     return c.tl.x <= p.x <= c.br.x && c.tl.y <= p.y <= c.br.y
 end
 
 
 
-function Base.intersect(a1::AxisRect{T}, a2::AxisRect{S}) where {T, S}
+function Base.intersect(a1::AxisRect, a2::AxisRect)
     c1, c2 = corners(a1), corners(a2)
     t1, r1, b1, l1 = c1.tl.y, c1.br.x, c1.br.y, c1.tl.x
     t2, r2, b2, l2 = c2.tl.y, c2.br.x, c2.br.y, c2.tl.x

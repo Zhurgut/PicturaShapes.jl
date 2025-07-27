@@ -6,33 +6,6 @@ using LinearAlgebra
 # positive y downwards
 
 
-
-# precision used for comparison, 
-# == checks for ==, which may not be meaningful due to rounding errors
-# so use \approx to compare shapes
-
-DIGITS::Int = 3
-EPS::Float64 = 1e-3
-
-function set_eps(eps::Real)
-    if 0 < eps < 1 
-        global DIGITS, EPS
-        DIGITS = -(log10(eps) |> floor |> Int)
-        EPS = eps
-    else
-        @warn "to set eps for shape comparison, eps needs to be between 0 and 1, you gave: $eps\nDoing nothing now..."
-    end
-end
-
-rounded(x::Integer) = x
-
-function rounded(x)
-    global DIGITS
-    return round(x, digits=DIGITS)
-end
-
-
-
 abstract type AbstractShape{T} end
 abstract type AbstractPolygon{T} <: AbstractShape{T} end # has corners and sides
 abstract type AbstractQuatrilateral{T} <: AbstractPolygon{T} end
@@ -65,6 +38,13 @@ struct AxisRect{T} <: AbstractQuatrilateral{T}
     tl::Point{T}
     w::T
     h::T
+    function AxisRect(p1::Point{S}, p2::Point{T}) where {S, T}
+        w = abs(p1.x - p2.x)
+        h = abs(p1.y - p2.y)
+        tl = Point(min(p1.x, p2.x), min(p1.y, p2.y))
+        F = promote_type(T, S)
+        return new{F}(Point{F}(tl), F(w), F(h))
+    end
 end
 
 struct Rect{T} <: AbstractQuatrilateral{T}
@@ -73,7 +53,11 @@ struct Rect{T} <: AbstractQuatrilateral{T}
     h::T
     θ::Float64
 
-    Rect{T}(p::Point{T}, w, h, θ=0.0) where T = new(p, T(w), T(h), mod2pi(θ + π) - π)
+    function Rect{T}(p::Point{T}, w::T, h::T, θ=0.0) where T
+        @assert w >= 0
+        @assert h >= 0
+        return new{T}(p, w, h, mod2pi(θ + π) - π)
+    end
 end
 
 struct Circle{T} <: AbstractShape{T}
@@ -113,13 +97,48 @@ end
 # distance function
 # distance from edge, positive if p is outside of shape
 # negative if p is inside shape
-dist(l, p::Point{T}) where T = dist(p,l)
+dist(s, p::Point{T}) where T = dist(p,s)
 
 
+
+# to facilitate comparison between shapes in the face of floating point arithmetic, 
+# shapes can "rounded", or aligned. The granularity of the aligning can be changed using set_prec. 
+align(s::AbstractShape) = error("not implemented")
+
+# this also changes the tolerance for \isapprox comparisons
+function set_prec(eps::Real)
+    global PREC
+    global INV_PREC
+    PREC = eps
+    INV_PREC = inv(eps)
+end
+
+set_prec(1e-3) # default
+
+
+
+function align_round(x)
+    global PREC, INV_PREC
+    return PREC * round(x * INV_PREC)
+end
+
+
+
+# some shapes can be simplified, for example, a segment where the beginning and end points are the same can be simplified to a point
+# simplify aims to not change the mathematical meaning of the shape
+simplify(s::AbstractShape) = s # however some shapes can't be simplified
+
+# simplify and intersect are not typestable
+
+
+
+# == compares for shapes to be numerically the same
+# you can use \approx to compare if shapes are roughly the same
 function Base.:(==)(s1::AbstractShape{T}, s2::AbstractShape{S}) where {T, S}
-    # this gets only called, when s1 and s2 have different types, e.g. a point and a segment
+    # this only gets called when s1 and s2 have different types, e.g. a point and a segment
     ss1 = simplify(s1)
     ss2 = simplify(s2)
+
     if ss1 != s1 || ss2 != s2
         # simplification changed things
         return ss1 == ss2 # one more chance
@@ -128,10 +147,12 @@ function Base.:(==)(s1::AbstractShape{T}, s2::AbstractShape{S}) where {T, S}
         return false
     end
 end
+
 function Base.isapprox(s1::AbstractShape{T}, s2::AbstractShape{S}) where {T, S}
-    # this gets only called, when s1 and s2 have different types, e.g. a point and a segment
+    # this only gets called when s1 and s2 have different types, e.g. a point and a segment
     ss1 = simplify(s1)
     ss2 = simplify(s2)
+
     if ss1 != s1 || ss2 != s2
         # simplification changed things
         return ss1 ≈ ss2 # one more chance
@@ -140,11 +161,6 @@ function Base.isapprox(s1::AbstractShape{T}, s2::AbstractShape{S}) where {T, S}
         return false
     end
 end
-
-
-align(s::AbstractShape) = s
-simplify(s::AbstractShape) = s # some shapes can't be simplified, some can sometimes
-
 
 
 

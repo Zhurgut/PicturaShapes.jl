@@ -1,18 +1,18 @@
 
 
 
-function center(r::Rect{T}) where T
+function center(r::Rect)
     c = corners(r)
     return 0.5(c.tl + c.br)
 end
 
-function corners(r::Rect{T}) where T
+function corners(r::Rect)
     c = corners(AxisRect(Point(0,0), r.w, r.h))
     d = rotate.((c.tr, c.bl, c.br), r.θ)
-    return (tl=r.tl, tr=d[1] + r.tl, bl=d[2] + r.tl, br=d[3] + r.tl)
+    return (tl=r.tl, tr=r.tl + d[1], bl=r.tl + d[2], br=r.tl + d[3])
 end
 
-function sides(r::Rect{T}) where T
+function sides(r::Rect)
     c = corners(r)
     t = Segment(c.tl, c.tr)
     l = Segment(c.bl, c.tl)
@@ -23,50 +23,38 @@ end
 
 
 
-function dist(p::Point{T}, r::Rect{S}) where {T,S}
+function dist(p::Point, r::Rect)
     p2 = rotate(p - r.tl, -r.θ)
     return dist(p2, AxisRect(Point(0,0), r.w, r.h))
 end
 
 
 
-rotate(r::Rect{T}, θ) where T = Rect(rotate(r.tl, θ), r.w, r.h, r.θ + θ) # around origin, the whole thing!
-translate(r::Rect{T}, dx, dy) where T = Rect(r.tl + Point(dx, dy), r.w, r.h, r.θ)
-function scale(r::Rect{T}, sx, sy) where T
+rotate(r::Rect, θ)         = rect(rotate(r.tl, θ), r.w, r.h, r.θ + θ) # around origin, the whole thing!
+translate(r::Rect, dx, dy) = rect(r.tl + Point(dx, dy), r.w, r.h, r.θ)
+function scale(r::Rect, sx, sy)
     c = corners(r)
-    if sx == sy
-        Rect(tl=scale(c.tl, sx, sy), tr=scale(c.tr, sx, sy), bl=scale(c.bl, sx, sy))
-    end
     return Quatrilateral(scale(c.tl, sx, sy), scale(c.tr, sx, sy), scale(c.br, sx, sy), scale(c.bl, sx, sy))
 end
 
 
 
-function align(r::Rect{T}) where T
-    d = diagonals(r)
-    Rect(tl=align(d[1].p1), tr=align(d[2].p1), br=align(d[1].p2)) # ?
-end
+align(r::Rect) = rect(align(r.tl), align_round(r.w), align_round(r.h), r.θ)
 
-function simplify(r::Rect{T}) where T
-    θ_aligned_to_axis = round(2r.θ/π)*π/2
-    r_aligned = Rect(r.tl, r.w, r.h, θ_aligned_to_axis)
-    if !(r_aligned ≈ r) # kinda expensive, but the only way to be sure
-        return r
+
+function simplify(r::Rect)
+    a = AxisRect(Point(0,0), r.w, r.h)
+    simple_a = simplify(a)
+    if a != simple_a
+        return simplify(rotate(simple_a, r.θ) + r.tl)
     end
-    # r is pretty much a axis aligned rectangle
-    c = corners(r)
-    x1, x2, y1, y2 = c.tl.x, c.br.x, c.tl.y, c.br.y
-    l, r, t, b = min(x1, x2), max(x1, x2), min(y1, y2), max(y1, y2)
-    tl = Point(l, t)
-    w = r - l
-    h = b - t
-    return simplify(AxisRect(tl, w, h))
+    return r
 end
 
 
 
 
-function Base.in(p::Point{T}, r::Rect{S}) where {T, S}
+function Base.in(p::Point, r::Rect)
     p2 = rotate(p - r.tl, -r.θ)
     return p2 ∈ AxisRect(Point(0,0), r.w, r.h)
 end

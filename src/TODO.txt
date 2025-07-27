@@ -17,10 +17,7 @@ Triangle        :    xx   |      x       | xx |   xx   |   xx  |   xx  |   xx   
 Qatrilateral    :    xx   |      x       | xx |   xx   |   xx  |   xx  |   xx   |  xx   |    x     |      x     |      *       | x
 Polygon         :         |              |    |        |       |       |        |       |          |      x     |      *       |  
 
-approx: in principle, we should check if a rectangle is approximately the same as a quatrilateral as well for example, so approx also needs a whole table of methods for different combinations
-for now, this can be fixed client side e.g. simplify(a) approx simplify(b)
-
-what happens with shapes like rect with negative width and height...
+what happens with shapes like rect with negative width and height, does it always work?
 
 intersects:
                   Point | Segment | Line | AxisRect | Rect | Circle | Ellipse | Triangle | Quatrilateral | Polygon

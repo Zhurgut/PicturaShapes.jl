@@ -4,14 +4,6 @@ using Shapes
 using LinearAlgebra
 using Pictura
 
-@testset "set_eps" begin
-    old_eps = Shapes.EPS
-    Shapes.set_eps(2.3e-5)
-    @test Shapes.EPS == 2.3e-5
-    @test Shapes.DIGITS == 5
-    Shapes.set_eps(old_eps)
-end
-
 
 
 
@@ -63,7 +55,7 @@ end
     r3 = Rect(tl=rcs.tl, tr=rcs.tr, bl=rcs.bl)
     r4 = Rect(0,0, 7.2915026221, 3.291502622, -0.42403, mode=:center)
     r5 = Rect(0,0, 7.2915026221/2, 3.291502622/2, -0.42403, mode=:radius)
-    @test typeof(Rect(-1, -1, 1, 1)) == Rect{Int}
+    @test typeof(Rect(-1, -1.0f0, 1, 1, 1.0f0)) == Rect{Float32}
     @test r1 ≈ r2
     @test r1 ≈ r3
     @test r1 ≈ r4

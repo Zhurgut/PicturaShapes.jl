@@ -14,7 +14,7 @@
 flip(e) = Ellipse(e.center, e.radius.y, e.radius.x, e.θ + π/2) # same ellipse as before, different parameters
 
 
-ellipse_curve(x, rx, ry) = ry * sqrt(1 - (x/rx)^2)
+ellipse_curve(x, rx, ry) = ry * sqrt(1 - (x/rx)^2) # -rx <= x <= rx
 
 function closest_point_to_parabola(pt, rx)
     # assuming p.x > 0 and p.y > 0, rx > 1, ry=1
@@ -71,7 +71,7 @@ function derivative_equals(d, rx, ry)
     return Point(x, ry*sqrt(max(0, 1-x^2/rx^2)))
 end
 
-function focal_points(e::Ellipse{T}) where T
+function focal_points(e::Ellipse)
     if e.radius.y > e.radius.x
         return focal_points(flip(e))
     end
@@ -92,7 +92,7 @@ function axes(e::Ellipse{T}) where T
 end
 
 let
-    global function dist(p::Point{T}, e::Ellipse{S}) where {T, S}
+    global function dist(p::Point, e::Ellipse)
         if e.radius.y > e.radius.x
             return dist(p, flip(e))
         end
@@ -148,7 +148,7 @@ let
 
 end
 
-function Base.:(==)(e1::Ellipse{T}, e2::Ellipse{S}) where {T, S}
+function Base.:(==)(e1::Ellipse, e2::Ellipse)
     if e1.center != e2.center return false end
     
     f11, f12, rx1 = focal_points(e1)
@@ -159,21 +159,21 @@ function Base.:(==)(e1::Ellipse{T}, e2::Ellipse{S}) where {T, S}
     s2 = Segment(f21, f22)
     return s1 == s2
 end
-function Base.isapprox(e1::Ellipse{T}, e2::Ellipse{S}) where {T, S}
+function Base.isapprox(e1::Ellipse, e2::Ellipse)
     if e1.center ≉ e2.center return false end
 
     f11, f12, rx1 = focal_points(e1)
     f21, f22, rx2 = focal_points(e2)
-    if abs(rx1 - rx2) > EPS return false end
+    if abs(rx1 - rx2) > PREC return false end
 
     s1 = Segment(f11, f12)
     s2 = Segment(f21, f22)
     return s1 ≈ s2
 end
 
-rotate(e::Ellipse{T}, θ) where T = Ellipse(rotate(e.center, θ), e.radius.x, e.radius.y, e.θ + θ)
-translate(e::Ellipse{T}, dx, dy) where T = Ellipse(e.center + Point(dx, dy), e.radius.x, e.radius.y, e.θ)
-function scale(e::Ellipse{T}, sx, sy) where T
+rotate(e::Ellipse, θ) = Ellipse(rotate(e.center, θ), e.radius.x, e.radius.y, e.θ + θ)
+translate(e::Ellipse, dx, dy) = Ellipse(e.center + Point(dx, dy), e.radius.x, e.radius.y, e.θ)
+function scale(e::Ellipse, sx, sy)
     if e.θ == 0
         return Ellipse(scale(e.center, sx, sy), sx*e.radius.x, sy*e.radius.y)
     end
@@ -186,22 +186,32 @@ function scale(e::Ellipse{T}, sx, sy) where T
     return Ellipse(Point(0,0), F.S[1]*p1, F.S[2]*p2) + scale(e.center, sx, sy)
 end
 
-function Base.in(p::Point{T}, e::Ellipse{S}) where {T, S}
+function Base.in(p::Point, e::Ellipse)
     pr = rotate(p - e.center, -e.θ)
     ps = scale(pr, 1/e.radius.x, 1/e.radius.y)
     return ps ∈ Circle(Point(0,0), 1)
 end
 
-align(e::Ellipse) = Ellipse(align(e.center), rounded(e.radius.x), rounded(e.radius.y), e.θ)
+align(e::Ellipse) = Ellipse(align(e.center), align_round(e.radius.x), align_round(e.radius.y), e.θ)
 function simplify(e::Ellipse)
+    if e.radius.y > e.radius.x
+        return simplify(flip(e))
+    end
+
+    if e.radius.y < PREC
+        mj, _ = axes(e)
+        return simplify(mj)
+    end
+
     f1, f2, rx = focal_points(e)
     if f1 ≈ f2
-        if rx < EPS
-            return 0.5(f1 + f2)
+        if rx < PREC
+            return e.center
         else
-            return Circle(0.5(f1 + f2), 0.5(e.radius.x + e.radius.y))
+            return Circle(e.center, 0.5(e.radius.x + e.radius.y))
         end
     end
+    
     return e
 end
 
