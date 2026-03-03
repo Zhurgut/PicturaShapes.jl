@@ -38,24 +38,15 @@ function Ellipse(f1::Point, f2::Point, rx::Real)
     return Ellipse(0.5*(f1 + f2), rx, ry, θ)
 end
 
-
-
-# a = radius.x, radius.y = 1, center=(0,0)
-# function ellipse_approx(x, a)
-#     x = x/a
-#     return if x <= 0.8
-#         -0.728125x^2 + 0.0825x + 1
-#     else
-#         -11.125x^2 + 17.025x - 5.9
-#     end
-# end
+Base.convert(::Type{Ellipse{T}}, e::Ellipse) where T = Ellipse{T}(Point{T}(e.center), Point{T}(e.radius), e.θ)
+Ellipse{T}(e) where T = convert(Ellipse{T}, e)
 
 flip(e) = Ellipse(e.center, e.radius.y, e.radius.x, e.θ + π/2) # same ellipse as before, different parameters
 
 
 
 function focal_points(e::Ellipse)
-    c = sqrt(1 - (e.radius.y/e.radius.x)^2)
+    c = sqrt(e.radius.x^2 - e.radius.y^2)
     fps = rotate(Segment(-c, 0, c, 0), e.θ) + e.center
 
     return fps.p1, fps.p2, e.radius.x
@@ -157,7 +148,7 @@ end
 
 function simplify(e::Ellipse)
     if e.radius.x == e.radius.y
-        return Circle(e.center, e.radiux.x)
+        return Circle(e.center, e.radius.x)
     end
     nothing
 end

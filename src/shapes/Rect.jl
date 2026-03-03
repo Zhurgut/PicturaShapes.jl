@@ -47,7 +47,7 @@ function Rect(;tl::Union{Nothing, Point} = nothing,
     elseif isnothing(tr)
         tr = tl + (br - bl)
     elseif isnothing(bl)
-        bl = br + (tr - tl)
+        bl = br + (tl - tr)
     end
 
     return Rect(tl, tr, bl)
@@ -66,7 +66,7 @@ function center(r::Rect)
     return 0.5(c.tl + c.br)
 end
 
-function corners(r::Rect{T}, type=T) where T
+function corners(r::Rect, type=Float64)
     c = corners(AxisRect(Point(0,0), r.w, r.h))
     d = rotate.((c.tl, c.tr, c.bl, c.br), r.θ) .|> Point{type}
     return (tl=d[1], tr=d[2], bl=d[3], br=d[4])

@@ -6,7 +6,6 @@ struct Line <: AbstractShape{Float64}
     dist::Float64 # distance of line from origin
 end
 
-Segment(l::Line) = intersect_with_circle_at_origin(l, max(1, 2*l.dist))
 
 function Line(p1::Point, p2::Point)
     p1 != p2 || error("cannot construct line from 2 points that are equal $p1 == $p2")
@@ -31,6 +30,8 @@ Line(x1, y1, x2, y2) = Line(Segment(x1, y1, x2, y2))
 
 
  
+Segment(l::Line) = intersect_with_circle_at_origin(l, max(1, 2*l.dist))
+
 
 # orthogonally project the point onto the line
 project(p::Point, l::Line)    = project(p, Segment(l))

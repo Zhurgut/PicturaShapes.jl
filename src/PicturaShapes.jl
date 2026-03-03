@@ -44,7 +44,8 @@ sdf(s, p::Point) = sdf(p,s)
 
 # some shapes can be simplified, for example, a segment where the beginning and end points are the same can be simplified to a point
 # simplify will not change the mathematical meaning of the shape
-simplify(s::AbstractShape) = s
+# returns a simplified shape on success, and nothing on failure
+simplify(s::AbstractShape) = nothing
 
 
 export simplify, sdf

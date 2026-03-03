@@ -2,6 +2,9 @@
 
 # just overwrite display..
 
+align_round(x) = round(x, digits=3)
+align(p::Point) = Point(round(p.x, digits=3), round(p.y, digits=3))
+
 function Base.show(io::IO, ::MIME"text/plain", p::Point{T}) where T <: AbstractFloat
     print(io, align(p))
 end
@@ -15,7 +18,8 @@ function Base.show(io::IO, ::MIME"text/plain", s::Segment{T}) where T
 end
 
 function Base.show(io::IO, ::MIME"text/plain", l::Line)
-    print(io, "Line(θ=$(l.θ), dist=$(l.dist)) ≘ ", align(Segment(l)))
+    s = Segment(l)
+    print(io, "Line(θ=$(l.θ), dist=$(l.dist)) ≘ ", Segment(align(s.p1), align(s.p2)))
 end
 
 function Base.show(io::IO, ::MIME"text/plain", a::AxisRect{T}) where T
@@ -46,7 +50,7 @@ end
 
 function Base.show(io::IO, ::MIME"text/plain", e::Ellipse{T}) where T
     if T <: AbstractFloat
-        e = align(e)
+        e = Ellipse(align(e.center), align(e.radius), e.θ)
     end
     print(io, "Ellipse{$T}(($(e.center.x), $(e.center.y)), radius_x=$(align_round(e.radius.x)), radius_y=$(align_round(e.radius.y)), θ=$(e.θ))")
 end
