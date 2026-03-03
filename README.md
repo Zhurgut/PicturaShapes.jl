@@ -1,7 +1,5 @@
-# Shapes
+# PShapes
 
-A Package
+A Package with 2D shapes
 
-with shapes...
-
-move em, stretch em, intersect em, how far are they apart? what is their area? I dont know? 
+move em, stretch em, intersect em, how far are they apart? what is their area?

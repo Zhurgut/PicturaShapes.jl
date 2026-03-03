@@ -5,6 +5,16 @@ Base.intersect(::Nothing, s::AbstractShape) = nothing
 
 Base.intersect(p::Point{T}, s::AbstractShape) where T = p ∈ s ? p : nothing
 
+
+
+function Base.intersect(p1::Point, p2::Point)
+    if p1 == p2
+        return p1
+    end
+    return nothing
+end
+
+
 function Base.intersect(s::Segment{T}, f::AbstractShape{S}) where {S,T}
     i = f ∩ Line(s)
     if i isa Segment
@@ -86,6 +96,84 @@ function Base.intersect(e::Ellipse{T}, l::Line) where T
 
     return ir
 end
+
+
+
+
+
+
+function Base.intersect(l1::Segment, l2::Segment)
+    i = intersect(l1, Line(l2))
+    if i isa Point && i ∈ l2
+        return i
+    elseif i isa Segment
+        return overlapping_segment(l1, l2)
+    end
+    return nothing
+end
+
+
+
+function Base.intersect(l1::Line, l2::Line)
+    if l1 ≈ l2 # literally the same
+        return Line(l1.θ, 0.5*(l1.dist+l2.dist))
+    end
+    # not the same
+
+    if mod(l1.θ, π) == mod(l2.θ, π) # parallel, but not the same
+        return nothing
+    end
+    # not parallel
+
+    if l2.dist == 0
+        l1, l2 = l2, l1
+    end
+
+    p = characteristic_point(l1)
+    l1 = Line(l1.θ, 0) # move both lines so that one goes through origin ( = l1 - p)
+    l2 = l2 - p
+
+    # l1.dist == 0
+    
+    α = (l1.θ - π/2) - l2.θ
+    ak = l2.dist
+    hyp = ak * sec(α) # ak / cos(α)
+    std_hyp = Point(sin(l1.θ), -cos(l1.θ))
+
+    return hyp*std_hyp + p
+end
+
+
+
+function Base.intersect(a1::AxisRect, a2::AxisRect)
+    c1, c2 = corners(a1), corners(a2)
+    t1, r1, b1, l1 = c1.tl.y, c1.br.x, c1.br.y, c1.tl.x
+    t2, r2, b2, l2 = c2.tl.y, c2.br.x, c2.br.y, c2.tl.x
+
+    if b2 < t1 || b1 < t2 || r2 < l1 || r1 < l2
+        return nothing
+    end
+
+    il = max(l1, l2)
+    ir = min(r1, r2)
+    it = max(t1, t2)
+    ib = min(b1, b2)
+
+    i_tl = Point(il, it)
+    i_br = Point(ir, ib)
+
+    if il == ir && it == ib
+        return i_tl
+    end
+
+    if il == ir || it == ib
+        return Segment(i_tl, i_br)
+    end
+
+    return AxisRect(i_tl, i_br)
+end
+
+
 
 
 

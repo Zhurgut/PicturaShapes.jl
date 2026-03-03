@@ -1,5 +1,44 @@
 
 
+struct Ellipse{T} <: AbstractShape{T}
+    center::Point{T}
+    radius::Point{T}
+    θ::Float64
+end
+
+
+
+Ellipse(x, y, rx, ry, θ=0.0) = Ellipse(Point(x, y), rx, ry, θ)
+
+function Ellipse(p::Point{T1}, rx::T2, ry::T3, θ=0.0) where {T1, T2 <: Real, T3 <: Real}
+    T = promote_type(T1, T2, T3)
+    if rx >= ry
+        return Ellipse{T}(Point{T}(p), Point{T}(Point(abs(rx), abs(ry))), Float64(mod2pi(θ)))
+    else
+        return Ellipse{T}(Point{T}(p), Point{T}(Point(abs(ry), abs(rx))), Float64(mod2pi(θ) + 0.5π))
+    end
+end
+
+
+# p1 and p2 points at the end of axes of the ellipse
+function Ellipse(center::Point, p1::Point, p2::Point)
+    rx = dist(p1, center)
+    ry = dist(p2, center)
+    θ = angle(p1 - center)
+    return Ellipse(center, rx, ry, θ)
+end
+
+
+# every point p on ellipse satisfies dist(p, f1) + dist(p, f2) = 2*rx
+function Ellipse(f1::Point, f2::Point, rx::Real)
+    d = 0.5*dist(f1, f2)
+    rx >= d || error("focus points too far apart, or 'rx' too small")
+    ry = sqrt(rx*rx - d*d)
+    θ = angle(f2 - f1)
+    return Ellipse(0.5*(f1 + f2), rx, ry, θ)
+end
+
+
 
 # a = radius.x, radius.y = 1, center=(0,0)
 # function ellipse_approx(x, a)
@@ -14,139 +53,71 @@
 flip(e) = Ellipse(e.center, e.radius.y, e.radius.x, e.θ + π/2) # same ellipse as before, different parameters
 
 
-ellipse_curve(x, rx, ry) = ry * sqrt(1 - (x/rx)^2) # -rx <= x <= rx
-
-function closest_point_to_parabola(pt, rx)
-    # assuming p.x > 0 and p.y > 0, rx > 1, ry=1
-    # approximate ellipse with 1-(x/rx)^2, find closest point on that curve (only considering first quadrant)
-
-    if 0.5rx*pt.x - 0.5*rx^2 >= pt.y
-        return Point(rx, 0)
-    end
-
-    p = rx^2 * (rx^2/2 + pt.y - 1)
-    q = -0.5 * rx^4 * pt.x
-    R = sqrt(max(0, q^2/4 + p^3/27))
-    
-    x = cbrt(-q/2 + R) + cbrt(-q/2 - R)
-    
-    return Point(x, 1 - (x/rx)^2)
-end
-
-function approximately_closest_point(pt, rx)
-    # assuming p.x > 0 and p.y > 0, rx > 1, ry=1
-    # approximate ellipse with 1-(x/rx)^2, use it to find point which is close to target point
-    a = closest_point_to_parabola(pt, rx)
-    if a.x == 0 return a end
-
-    function intersecting_unit_circle(sa, spt) # which point on the line between a and b lies on the boundary of circle
-        
-        function quadratic(a, b, c, dir)
-            return if dir
-                (-b + sqrt(b^2 - 4*a*c)) / (2a)
-            else
-                (-b - sqrt(b^2 - 4*a*c)) / (2a)
-            end
-        end
-    
-        local a = sa.x
-        e = spt.x - sa.x
-        b = sa.y
-        f = spt.y - sa.y
-    
-        δ = quadratic(f^2 + e^2, 2(b*f + a*e), a^2+b^2-1, f >= 0)
-
-        return sa + δ*(spt-sa)
-    end
-
-    p = intersecting_unit_circle(scale(a, 1/rx, 1), scale(pt, 1/rx, 1))
-
-    return scale(p, rx, 1)
-end
-
-
-# at what point is the derivative of the centered ellipse function equal to d
-function derivative_equals(d, rx, ry)
-    x = d * rx / sqrt(ry^2/rx^2 + d^2)
-    return Point(x, ry*sqrt(max(0, 1-x^2/rx^2)))
-end
 
 function focal_points(e::Ellipse)
-    if e.radius.y > e.radius.x
-        return focal_points(flip(e))
-    end
-
     c = sqrt(1 - (e.radius.y/e.radius.x)^2)
     fps = rotate(Segment(-c, 0, c, 0), e.θ) + e.center
 
     return fps.p1, fps.p2, e.radius.x
 end
 
+
 function axes(e::Ellipse{T}) where T
-    if e.radius.y > e.radius.x
-        return axes(flip(e))
-    end
     major = rotate(Segment(e.radius.x, 0, -e.radius.x, 0), e.θ)
     minor = rotate(Segment(0, e.radius.y, 0, -e.radius.y), e.θ)
     return major + e.center, minor + e.center
 end
 
-let
-    global function dist(p::Point, e::Ellipse)
-        if e.radius.y > e.radius.x
-            return dist(p, flip(e))
-        end
 
-        std_pt = (1 / e.radius.y) * rotate(p - e.center, -e.θ)
-        rx = e.radius.x / e.radius.y
-        sx, sy = std_pt.x >= 0 ? 1 : -1, std_pt.y >= 0 ? 1 : -1
-        std_pt = scale(std_pt, sx, sy)
-        init = approximately_closest_point(std_pt, rx)
 
-        closest_std = optimize(init, rx, std_pt)
-        # closest = rotate(e.radius.y * scale(closest_std, sx, sy), e.θ) + e.center
 
-        # display(closest)
 
-        # d = dist(p, closest)
-        d = e.radius.y * dist(std_pt, closest_std)
-        return p ∈ e ? -d : d
-    end
+function sdf(p_in::Point, e::Ellipse)
+    mix(p1, p2, z) = (1-z)*p1 + z*p2
+    distance(x1, y1, x2, y2) = sqrt((x1 - x2)^2 + (y1 - y2)^2)
+    parabola(a, b, c, x) = a*x^2 + b*x + c
+    solve_quadratic(a, b, c; ϵ=0) = (-b - sqrt(max(0, b^2 - 4*a*c))) / (2a+ϵ)
 
-    function optimize(init, rx, p)
-        ϕ = angle(init)
-        θ = atan(rx*tan(ϕ))
-        return newton(θ, rx, p)
-    end
+    p = p_in - e.center
 
-    function newton(ϕ, rx, p)
-        L(ϕ) = 2p.x*rx*sin(ϕ) + (1-rx^2)*sin(2ϕ) - 2p.y*cos(ϕ)
-        dL(ϕ) = 2p.x*rx*cos(ϕ) + 2(1-rx^2)*cos(2ϕ) + 2p.y*sin(ϕ)
-        # X = ϕ-1:0.01:ϕ+1
-        # println("phi = ", ϕ)
-        # P = plot(X, [L.(X), dL.(X)])
-        # scatter!(P, [ϕ], [L(ϕ)], markersize=1)
-        # display(P)
+    p = Point(abs(p.x), abs(p.y)) * (1 / e.radius.y)
 
-        # X = 0:0.01:rx
-        # P = plot(X, ellipse_curve.(X, rx, 1), ratio=:equal)
-        # pt = scale(rotate(Point(1, 0), ϕ), rx, 1)
-        # scatter!(P, [p.x, pt.x], [p.y, pt.y])
-        # display(P)
-        ϕ_next = ϕ - L(ϕ) / dL(ϕ)
-        # println()
-        # println(L(ϕ))
-        # println("phi2 = ", ϕ_next)
-        for i=1:20 # usually takes like 3-5 iterations 👌
-            ϕ = ϕ_next
-            ϕ_next = ϕ - L(ϕ) / dL(ϕ)
-            # println(L(ϕ))
-            if abs(ϕ - ϕ_next) < 1e-12 break end
-        end
-        return scale(rotate(Point(1, 0), ϕ_next), rx, 1)
-    end
+    r = e.radius.x / e.radius.y
+
+    parabola_peak_x = (r^2 - 1) * (1 / r)
+
+    A = -r / (parabola_peak_x + 1e-6)
+    B = 2r
+    C = 1 - r^2
+
+    a = -A
+    b = 2*A*p.x
+    c = B*p.x + C - p.y
+
+    tx = solve_quadratic(a, b, c)
+    tx = clamp(tx, 0, parabola_peak_x - 1e-4)
+    ty = parabola(A, B, C, tx)
+
+    p_shift = Point(p.x * (1 / r), p.y)
+    t_shift = Point(tx * (1 / r), ty)
+    dif = t_shift - p_shift
+
+    a2 = dot(dif, dif)
+    b2 = 2*dot(dif, p_shift)
+    c2 = dot(p_shift, p_shift) - 1
+
+    z = solve_quadratic(a2, b2, c2, ϵ=1e-20)
+
+    # the point between t_shift and p_shift on the unit circle
+    c = mix(p_shift, t_shift, z)
+
+    # the point between t and p on the ellipse
+    b = Point(r * c.x, c.y)
+
+    return sign(c2) * radius.y * sdf(b, p)
 
 end
+
 
 function Base.:(==)(e1::Ellipse, e2::Ellipse)
     if e1.center != e2.center return false end
@@ -159,17 +130,7 @@ function Base.:(==)(e1::Ellipse, e2::Ellipse)
     s2 = Segment(f21, f22)
     return s1 == s2
 end
-function Base.isapprox(e1::Ellipse, e2::Ellipse)
-    if e1.center ≉ e2.center return false end
 
-    f11, f12, rx1 = focal_points(e1)
-    f21, f22, rx2 = focal_points(e2)
-    if abs(rx1 - rx2) > PREC return false end
-
-    s1 = Segment(f11, f12)
-    s2 = Segment(f21, f22)
-    return s1 ≈ s2
-end
 
 rotate(e::Ellipse, θ) = Ellipse(rotate(e.center, θ), e.radius.x, e.radius.y, e.θ + θ)
 translate(e::Ellipse, dx, dy) = Ellipse(e.center + Point(dx, dy), e.radius.x, e.radius.y, e.θ)
@@ -186,32 +147,18 @@ function scale(e::Ellipse, sx, sy)
     return Ellipse(Point(0,0), F.S[1]*p1, F.S[2]*p2) + scale(e.center, sx, sy)
 end
 
+
 function Base.in(p::Point, e::Ellipse)
     pr = rotate(p - e.center, -e.θ)
     ps = scale(pr, 1/e.radius.x, 1/e.radius.y)
     return ps ∈ Circle(Point(0,0), 1)
 end
 
-align(e::Ellipse) = Ellipse(align(e.center), align_round(e.radius.x), align_round(e.radius.y), e.θ)
+
 function simplify(e::Ellipse)
-    if e.radius.y > e.radius.x
-        return simplify(flip(e))
+    if e.radius.x == e.radius.y
+        return Circle(e.center, e.radiux.x)
     end
-
-    if e.radius.y < PREC
-        mj, _ = axes(e)
-        return simplify(mj)
-    end
-
-    f1, f2, rx = focal_points(e)
-    if f1 ≈ f2
-        if rx < PREC
-            return e.center
-        else
-            return Circle(e.center, 0.5(e.radius.x + e.radius.y))
-        end
-    end
-    
-    return e
+    nothing
 end
 

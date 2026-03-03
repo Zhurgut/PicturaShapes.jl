@@ -21,7 +21,7 @@ what happens with shapes like rect with negative width and height, does it alway
 
 intersects:
                   Point | Segment | Line | AxisRect | Rect | Circle | Ellipse | Triangle | Quatrilateral | Polygon
-Point           :   x   |    x    |   x  |     x    |  x   |   x    |    x    |    x     |      x        |    x    
+Point           :   -   |    -    |   -  |     x    |  x   |   x    |    x    |    x     |      x        |    x    
 Segment         :   -   |    x    |   x  |     x    |  x   |   x    |    x    |    x     |      x        |    x    
 Line            :   -   |    -    |   x  |     x    |  x   |   x    |    x    |    x     |      x        |    x    
 AxisRect        :   -   |    -    |   _  |     x    |      |   -    |    -    |          |               |         
@@ -36,24 +36,10 @@ Polygon         :   -   |    -    |   _  |     -    |   -  |   -    |    -    | 
 dist: 
                   Point | Segment | Line | AxisRect | Rect | Circle | Ellipse | Triangle | Quatrilateral | Polygon
 Point           :   xx  |   xx    |  xx  |    xx    |  xx  |  xx    |   xx    |   xx     |      xx       |         
-Segment         :   -   |    x    |      |          |      |        |         |          |               |         
-Line            :   -   |    -    |      |          |      |        |         |          |               |         
-AxisRect        :   -   |    -    |   _  |          |      |        |         |          |               |         
-Rect            :   -   |    -    |   _  |     -    |      |        |         |          |               |         
-Circle          :   -   |    -    |   _  |     -    |   -  |   x    |         |          |               |         
-Ellipse         :   -   |    -    |   _  |     -    |   -  |   -    |         |          |               |         
-Triangle        :   -   |    -    |   _  |     -    |   -  |   -    |    -    |          |               |         
-Qatrilateral    :   -   |    -    |   _  |     -    |   -  |   -    |    -    |    -     |               |         
-Polygon         :   -   |    -    |   _  |     -    |   -  |   -    |    -    |    -     |       -       |         
+
 
 dist: consider edge cases, degenerate ellipse, segment, etc...
 
-rendering...
-
-vline and hline intersects need to be type stable for performance!
-
-test:
-Line(HLine) and Line(VLine) constructors
 
 
 

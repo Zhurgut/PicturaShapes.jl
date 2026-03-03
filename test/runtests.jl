@@ -1,6 +1,6 @@
 
 using Test
-using Shapes
+using PicturaShapes
 using LinearAlgebra
 using Pictura
 

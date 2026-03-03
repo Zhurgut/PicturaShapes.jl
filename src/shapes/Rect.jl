@@ -1,15 +1,75 @@
 
 
+struct Rect{T} <: AbstractQuatrilateral{T}
+    tl::Point{T}
+    w::T
+    h::T
+    θ::Float64
+end
+
+
+
+Rect(p::Point, w, h, θ; mode=:corner) = Rect(p, w, h, θ, Val(mode))
+Rect(x, y, w, h, θ; mode=:corner)     = Rect(Point(x, y), w, h, θ, Val(mode))
+
+
+function Rect(p::Point{P}, w::W, h::H, θ, mode::Symbol)
+    a = AxisRect(Point(0,0), w, h, mode=mode)
+    tl = rotate(a.tl, θ)
+    T = promote_type(typeof(tl.x), P, W, H)
+    return Rect{T}(Point{T}(tl + p), T(a.w), T(a.h), Float64(θ))
+end
+
+
+function Rect(tl::Point, tr::Point, bl::Point)
+    w = dist(tl, tr)
+    h = dist(tl, bl)
+    θ = if dist(tl, tr) > dist(tl, bl)
+            angle(tr - tl)
+        else
+            angle(bl - tl) + π/2
+        end
+    
+    return Rect(tl, w, h, θ)
+end
+
+
+function Rect(;tl::Union{Nothing, Point} = nothing, 
+               tr::Union{Nothing, Point} = nothing, 
+               bl::Union{Nothing, Point} = nothing, 
+               br::Union{Nothing, Point} = nothing)
+    
+    nr_points = 4 - sum(isnothing.((tl, tr, bl, br)))
+    if nr_points < 3 error("not enough points, need at least 3") end
+
+    if isnothing(tl)
+        tl = tr + (bl - br)
+    elseif isnothing(tr)
+        tr = tl + (br - bl)
+    elseif isnothing(bl)
+        bl = br + (tr - tl)
+    end
+
+    return Rect(tl, tr, bl)
+end
+
+Base.convert(::Type{Rect{T}}, s::Rect) where T = Rect{T}(Point{T}(s.tl), T(s.w), T(s.h), s.θ)
+Rect{T}(r) where T = convert(Rect{T}, r)
+
+
+
+
+
 
 function center(r::Rect)
     c = corners(r)
     return 0.5(c.tl + c.br)
 end
 
-function corners(r::Rect)
+function corners(r::Rect{T}, type=T) where T
     c = corners(AxisRect(Point(0,0), r.w, r.h))
-    d = rotate.((c.tr, c.bl, c.br), r.θ)
-    return (tl=r.tl, tr=r.tl + d[1], bl=r.tl + d[2], br=r.tl + d[3])
+    d = rotate.((c.tl, c.tr, c.bl, c.br), r.θ) .|> Point{type}
+    return (tl=d[1], tr=d[2], bl=d[3], br=d[4])
 end
 
 function sides(r::Rect)
@@ -23,32 +83,26 @@ end
 
 
 
-function dist(p::Point, r::Rect)
+function sdf(p::Point, r::Rect)
     p2 = rotate(p - r.tl, -r.θ)
-    return dist(p2, AxisRect(Point(0,0), r.w, r.h))
+    return sdf(p2, AxisRect(Point(0,0), r.w, r.h))
 end
 
 
 
-rotate(r::Rect, θ)         = rect(rotate(r.tl, θ), r.w, r.h, r.θ + θ) # around origin, the whole thing!
-translate(r::Rect, dx, dy) = rect(r.tl + Point(dx, dy), r.w, r.h, r.θ)
+rotate(r::Rect, θ)         = Rect(rotate(r.tl, θ), r.w, r.h, mod2pi(r.θ + θ)) # around origin, the whole thing!
+translate(r::Rect, dx, dy) = Rect(r.tl + Point(dx, dy), r.w, r.h, r.θ)
 function scale(r::Rect, sx, sy)
     c = corners(r)
     return Quatrilateral(scale(c.tl, sx, sy), scale(c.tr, sx, sy), scale(c.br, sx, sy), scale(c.bl, sx, sy))
 end
 
 
-
-align(r::Rect) = rect(align(r.tl), align_round(r.w), align_round(r.h), r.θ)
-
-
 function simplify(r::Rect)
-    a = AxisRect(Point(0,0), r.w, r.h)
-    simple_a = simplify(a)
-    if a != simple_a
-        return simplify(rotate(simple_a, r.θ) + r.tl)
+    if r.θ == 0 || r.θ == 2π
+        return AxisRect(r.tl, r.w, r.h)
     end
-    return r
+    return nothing
 end
 
 

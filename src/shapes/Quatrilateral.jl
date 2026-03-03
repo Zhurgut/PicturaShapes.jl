@@ -1,5 +1,15 @@
 # 4 sided polygon
 
+
+struct Quatrilateral{T} <: AbstractQuatrilateral{T}
+    p1::Point{T}
+    p2::Point{T}
+    p3::Point{T}
+    p4::Point{T}
+end
+
+
+
 function points(r::AbstractQuatrilateral)
     c = corners(r)
     return (c.tl, c.tr, c.bl, c.br)

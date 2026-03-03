@@ -1,4 +1,14 @@
 
+
+
+
+struct Triangle{T} <: AbstractPolygon{T}
+    p1::Point{T}
+    p2::Point{T}
+    p3::Point{T}
+end
+
+
 points(t::Triangle) = (t.p1, t.p2, t.p3)
 
 function sides(t::Triangle)

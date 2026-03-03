@@ -1,5 +1,27 @@
 
-# finite line, storing the 2 endpoints
+
+struct Segment{T} <: AbstractShape{T}
+    p1::Point{T}
+    p2::Point{T}
+end
+
+
+
+function Segment(p1::Point{T}, p2::Point{S}) where {T, S}
+    R = promote_type(T, S)
+    return Segment{R}(Point{R}(p1), Point{R}(p2))
+end
+
+Segment(x1, y1, x2, y2) = Segment(Point(x1, y1), Point(x2, y2))
+Segment(p::Point, x, y) = Segment(p, Point(x, y))
+Segment(x, y, p::Point) = Segment(Point(x, y), p)
+
+
+Base.convert(::Type{Segment{T}}, s::Segment) where T = Segment{T}(Point{T}(s.p1), Point{T}(s.p2))
+Segment{T}(s) where T = convert(Segment{T}, s)
+
+
+
 
 
 #               x
@@ -48,8 +70,8 @@ end
 
 
 
-function dist(p::Point, l::Segment)
-    if l.p1 ≈ l.p2 return dist(p, 0.5*(l.p1 + l.p2)) end
+function sdf(p::Point, l::Segment)
+    if l.p1 == l.p2 return dist(p, l.p1) end
     δ = delta(p, l)
     if 0 <= δ <= 1
         q = project(p, l)
@@ -59,17 +81,9 @@ function dist(p::Point, l::Segment)
 end
 
 
-function dist(s::Segment{T}, l::Segment{S}) where {T,S}
-    i = s ∩ l
-    if !isnothing(i) return 0.0 end
-    ds = dist(s.p1, l), dist(s.p2, l), dist(l.p1, s), dist(l.p2, s)
-    return min(ds...)
-end
-
 
 
 Base.:(==)(l1::Segment, l2::Segment)    = (l1.p1 == l2.p1 && l1.p2 == l2.p2) || (l1.p1 == l2.p2 && l1.p2 == l2.p1)
-Base.isapprox(l1::Segment, l2::Segment) = (l1.p1 ≈  l2.p1 && l1.p2 ≈  l2.p2) || (l1.p1 ≈  l2.p2 && l1.p2 ≈  l2.p1)
 
 
 
@@ -78,30 +92,14 @@ translate(l::Segment, dx, dy) = Segment(translate(l.p1, dx, dy), translate(l.p2,
 scale(l::Segment, sx, sy)     = Segment(scale(l.p1, sx, sy), scale(l.p2, sx, sy))
 
 
-
-align(s::Segment) = Segment(align(s.p1), align(s.p2))
-
 function simplify(s::Segment)
-    if s.p1 ≈ s.p2
-        return 0.5(s.p1 + s.p2)
-    end
-    return s
-end
-
-
-
-Base.in(p::Point, l::Segment) = dist(p, l) <= PREC
-
-
-function Base.intersect(l1::Segment, l2::Segment)
-    i = intersect(l1, Line(l2))
-    if i isa Point && i ∈ l2
-        return i
-    elseif i isa Segment
-        return overlapping_segment(l1, l2)
+    if s.p1 == s.p2
+        return s.p1
     end
     return nothing
 end
+
+
 
 
 

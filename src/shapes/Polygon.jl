@@ -1,4 +1,12 @@
 
+
+
+struct Polygon{T} <: AbstractPolygon{T}
+    ps::Vector{Point{T}}
+end
+
+
+
 points(p::Polygon{T}) where T = p.ps
 
 

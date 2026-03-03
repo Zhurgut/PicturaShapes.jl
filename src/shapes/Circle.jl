@@ -1,8 +1,23 @@
 
 
+struct Circle{T} <: AbstractShape{T}
+    center::Point{T}
+    radius::T
+end
+ 
+function Circle(p::Point{T}, r::S) where {S,T}
+    U = promote_type(S, T)
+    return Circle{U}(Point{U}(p), U(r))
+end
+Circle(x, y, r) = Circle(Point(x, y), r)
+
+Base.convert(::Type{Circle{T}}, s::Circle) where T = Circle{T}(Point{T}(s.center), T(s.radius))
+Circle{T}(c) where T = convert(Circle{T}, c)
+
+
+
 
 unit_circle() = Circle(Point(0,0), 1)
-
 
 function intersect_unit_circle_with_x_axis(y)
     abs(y) > 1 && return nothing
@@ -24,18 +39,15 @@ end
 
 
 
-function dist(p::Point, c::Circle)
-    d = dist(p, c.center)
+function sdf(p::Point, c::Circle)
+    d = sdf(p, c.center)
     return d - c.radius
 end
-
-dist(c1::Circle, c2::Circle) = max(0, dist(c1.center, c2.center) - c1.radius - c2.radius)
 
 
 
 
 Base.:(==)(c1::Circle, c2::Circle)    = c1.center == c2.center && c1.radius == c2.radius
-Base.isapprox(c1::Circle, c2::Circle) = c1.center ≈ c2.center && abs(c1.radius - c2.radius) <= PREC
 
 
 
@@ -44,12 +56,10 @@ translate(c::Circle, dx, dy) = Circle(translate(c.center, dx, dy), c.radius)
 scale(c::Circle, sx, sy)     = Ellipse(scale(c.center, sx, sy), sx * c.radius, sy * c.radius)
 
 
-
-align(c::Circle) = Circle(align(c.center), align_round(c.radius))
-simplify(c::Circle) = c.radius < PREC ? c.center : c
+simplify(c::Circle) = c.radius == 0 ? c.center : nothing
 
 
-Base.in(p::Point, c::Circle) = dist(p, c) <= 0
+Base.in(p::Point, c::Circle) = dist(p, c.center) <= c.radius
 
 
 
