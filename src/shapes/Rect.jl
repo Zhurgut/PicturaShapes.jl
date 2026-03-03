@@ -9,11 +9,11 @@ end
 
 
 
-Rect(p::Point, w, h, θ; mode=:corner) = Rect(p, w, h, θ, Val(mode))
-Rect(x, y, w, h, θ; mode=:corner)     = Rect(Point(x, y), w, h, θ, Val(mode))
+Rect(p::Point, w, h, θ; mode=:corner) = Rect(p, w, h, θ, mode)
+Rect(x, y, w, h, θ; mode=:corner)     = Rect(Point(x, y), w, h, θ, mode)
 
 
-function Rect(p::Point{P}, w::W, h::H, θ, mode::Symbol)
+function Rect(p::Point{P}, w::W, h::H, θ, mode::Symbol) where {P, W, H}
     a = AxisRect(Point(0,0), w, h, mode=mode)
     tl = rotate(a.tl, θ)
     T = promote_type(typeof(tl.x), P, W, H)
@@ -22,9 +22,9 @@ end
 
 
 function Rect(tl::Point, tr::Point, bl::Point)
-    w = dist(tl, tr)
-    h = dist(tl, bl)
-    θ = if dist(tl, tr) > dist(tl, bl)
+    w = sdf(tl, tr)
+    h = sdf(tl, bl)
+    θ = if sdf(tl, tr) > sdf(tl, bl)
             angle(tr - tl)
         else
             angle(bl - tl) + π/2

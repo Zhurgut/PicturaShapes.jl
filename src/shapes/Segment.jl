@@ -32,7 +32,7 @@ Segment{T}(s) where T = convert(Segment{T}, s)
 
 # s = l.p1 + delta*(l.p2-.lp1), (s-x) ⊥ (l.p2-l.p1)
 function delta(x::Point, l::Segment)
-    if dist(l.p1, l.p2) == 0 error("cant compute delta, invalid segment (l.p1 == l.p2) $l") end
+    if sdf(l.p1, l.p2) == 0 error("cant compute delta, invalid segment (l.p1 == l.p2) $l") end
     d = l.p2-l.p1
     return ((x-l.p1) ⋅ d) / (d ⋅ d)
 end
@@ -71,13 +71,13 @@ end
 
 
 function sdf(p::Point, l::Segment)
-    if l.p1 == l.p2 return dist(p, l.p1) end
+    if l.p1 == l.p2 return sdf(p, l.p1) end
     δ = delta(p, l)
     if 0 <= δ <= 1
         q = project(p, l)
-        return dist(p, q)
+        return sdf(p, q)
     end
-    return min(dist(p, l.p1), dist(p, l.p2))
+    return min(sdf(p, l.p1), sdf(p, l.p2))
 end
 
 

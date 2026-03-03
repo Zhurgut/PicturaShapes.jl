@@ -22,8 +22,8 @@ end
 
 # p1 and p2 points at the end of axes of the ellipse
 function Ellipse(center::Point, p1::Point, p2::Point)
-    rx = dist(p1, center)
-    ry = dist(p2, center)
+    rx = sdf(p1, center)
+    ry = sdf(p2, center)
     θ = angle(p1 - center)
     return Ellipse(center, rx, ry, θ)
 end
@@ -31,7 +31,7 @@ end
 
 # every point p on ellipse satisfies dist(p, f1) + dist(p, f2) = 2*rx
 function Ellipse(f1::Point, f2::Point, rx::Real)
-    d = 0.5*dist(f1, f2)
+    d = 0.5*sdf(f1, f2)
     rx >= d || error("focus points too far apart, or 'rx' too small")
     ry = sqrt(rx*rx - d*d)
     θ = angle(f2 - f1)

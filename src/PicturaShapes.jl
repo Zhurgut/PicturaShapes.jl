@@ -48,7 +48,7 @@ simplify(s::AbstractShape) = s
 
 
 export simplify, sdf
-# public translate, scale, rotate
+export translate, scale, rotate
 
 
 

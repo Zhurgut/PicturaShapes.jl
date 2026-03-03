@@ -18,7 +18,7 @@ function AxisRect(p1::Point{S}, p2::Point{T}) where {S, T}
     h = abs(p1.y - p2.y)
     tl = Point(min(p1.x, p2.x), min(p1.y, p2.y))
     F = promote_type(T, S)
-    return new{F}(Point{F}(tl), F(w), F(h))
+    return AxisRect{F}(Point{F}(tl), F(w), F(h))
 end
 
 

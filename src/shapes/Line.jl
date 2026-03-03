@@ -14,7 +14,7 @@ function Line(p1::Point, p2::Point)
     q = project(Point(0,0), Segment(p1, p2))
     p = p2 - p1
 
-    if q ≈ Point(0,0)
+    if q == Point(0,0)
         pr = rotate(p, π/2)
         θ = angle(pr)
         return Line(θ, 0)
@@ -25,7 +25,6 @@ function Line(p1::Point, p2::Point)
 end
 
 Line(s::Segment)     = Line(s.p1, s.p2)
-Line(p1, p2)         = Line(Segment(p1, p2))
 Line(a, b, c)        = Line(Segment(a, b, c))
 Line(x1, y1, x2, y2) = Line(Segment(x1, y1, x2, y2))
 

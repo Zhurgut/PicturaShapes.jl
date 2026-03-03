@@ -66,26 +66,26 @@ function bounding_box(e::Ellipse, slack=0)
     return bounding_box(Rect(e.center, e.radius.x, e.radius.y, e.θ, mode=:radius), slack)
 end
 
-function bounding_box(t::Triangle, slack=0)
-    len(x) = dist(x.p1, x.p2)
-    ss = sides(t)
-    ls = len.(ss)
-    i = argmax(ls)
-    p1 = ss[i].p1
-    p2 = ss[i].p2
-    if i == 1
-        p3 = t.p3
-    elseif i == 2
-        p3 = t.p1
-    else
-        p3 = t.p2
-    end
-    w = len(ss[i])
-    h = dist(ss[i], p3)
-    if !is_on_right_side(ss[i], p3)
-        h = -h
-    end
-    return bounding_box(Rect(p1, w, h, angle(p2 - p1)), slack)
-end
+# function bounding_box(t::Triangle, slack=0)
+#     len(x) = dist(x.p1, x.p2)
+#     ss = sides(t)
+#     ls = len.(ss)
+#     i = argmax(ls)
+#     p1 = ss[i].p1
+#     p2 = ss[i].p2
+#     if i == 1
+#         p3 = t.p3
+#     elseif i == 2
+#         p3 = t.p1
+#     else
+#         p3 = t.p2
+#     end
+#     w = len(ss[i])
+#     h = dist(ss[i], p3)
+#     if !is_on_right_side(ss[i], p3)
+#         h = -h
+#     end
+#     return bounding_box(Rect(p1, w, h, angle(p2 - p1)), slack)
+# end
 
 
