@@ -69,9 +69,9 @@ function sdf(p_in::Point, e::Ellipse)
     parabola(a, b, c, x) = a*x^2 + b*x + c
     solve_quadratic(a, b, c; ϵ=0) = (-b - sqrt(max(0, b^2 - 4*a*c))) / (2a+ϵ)
 
-    p = p_in - e.center
+    p_in2 = rotate(p_in - e.center, -e.θ)
 
-    p = Point(abs(p.x), abs(p.y)) * (1 / e.radius.y)
+    p = (1 / e.radius.y) * Point(abs(p_in2.x), abs(p_in2.y)) 
 
     r = e.radius.x / e.radius.y
 
@@ -105,7 +105,7 @@ function sdf(p_in::Point, e::Ellipse)
     # the point between t and p on the ellipse
     b = Point(r * c.x, c.y)
 
-    return sign(c2) * radius.y * sdf(b, p)
+    return sign(c2) * e.radius.y * sdf(b, p)
 
 end
 

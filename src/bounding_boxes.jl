@@ -51,7 +51,7 @@ end
 
 
 
-bounding_box(s::AbstractShape, slack=0) = aligned_bounding_box(s, slack)
+bounding_box(s, slack=0) = aligned_bounding_box(s, slack)
 
 function bounding_box(r::Rect, slack=0)
     a = rotate(r, -r.θ)
@@ -59,7 +59,8 @@ function bounding_box(r::Rect, slack=0)
 end
 
 function bounding_box(s::Segment, slack=0)
-    return bounding_box(Rect(0.5(s.p1 + s.p2), dist(s.p1, s.p2), 0, angle(s.p2 - s.p1), mode=:center), slack)
+    r = Rect(0.5(s.p1 + s.p2), sdf(s.p1, s.p2), 0, angle(s.p2 - s.p1), mode=:center)
+    return bounding_box(r, slack)
 end
 
 function bounding_box(e::Ellipse, slack=0)

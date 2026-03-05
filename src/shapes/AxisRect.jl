@@ -85,11 +85,11 @@ function sdf(p::Point, a::AxisRect)
     c = corners(a)
     if p.x < a.tl.x
         if p.y < a.tl.y
-            return dist(p, c.tl)
+            return sdf(p, c.tl)
         elseif a.tl.y <= p.y <= a.tl.y + a.h
             return a.tl.x - p.x
         else
-            return dist(p, c.bl)
+            return sdf(p, c.bl)
         end
     elseif a.tl.x <= p.x <= a.tl.x + a.w
         if p.y < a.tl.y
@@ -101,11 +101,11 @@ function sdf(p::Point, a::AxisRect)
         end
     else
         if p.y < a.tl.y
-            return dist(p, c.tr)
+            return sdf(p, c.tr)
         elseif a.tl.y <= p.y <= a.tl.y + a.h
             return p.x - (a.tl.x + a.w)
         else
-            return dist(p, c.br)
+            return sdf(p, c.br)
         end
     end 
 end

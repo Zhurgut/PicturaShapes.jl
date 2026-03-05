@@ -68,7 +68,7 @@ end
 
 function corners(r::Rect, type=Float64)
     c = corners(AxisRect(Point(0,0), r.w, r.h))
-    d = rotate.((c.tl, c.tr, c.bl, c.br), r.θ) .|> Point{type}
+    d = translate.(rotate.((c.tl, c.tr, c.bl, c.br), r.θ), r.tl.x, r.tl.y) .|> Point{type}
     return (tl=d[1], tr=d[2], bl=d[3], br=d[4])
 end
 
