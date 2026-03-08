@@ -31,8 +31,8 @@ export Circle
 include("shapes/Ellipse.jl")
 export Ellipse
 
-# include("shapes/Quatrilateral.jl") 
-# export Quatrilateral
+include("shapes/Quatrilateral.jl") 
+export Quatrilateral
 
 # include("shapes/Triangle.jl")
 # export Triangle
@@ -55,7 +55,7 @@ export translate, scale, rotate
 
 include("operators.jl")
 include("show.jl")
-# include("intersects.jl")
+include("intersects.jl")
 # include("constructors.jl")
 
 include("bounding_boxes.jl")
