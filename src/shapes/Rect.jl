@@ -21,15 +21,15 @@ function Rect(p::Point{P}, w::W, h::H, θ, mode::Symbol) where {P, W, H}
 end
 
 
-function Rect(tl::Point, tr::Point, bl::Point)
-    w = sdf(tl, tr)
+function Rect(diagonal::Segment, other::Point)
+    tl, br, bl = if is_on_right_side(diagonal, other)
+        diagonal.p1, diagonal.p2, other
+    else 
+        diagonal.p2, diagonal.p1, other
+    end
+    w = sdf(br, bl)
     h = sdf(tl, bl)
-    θ = if sdf(tl, tr) > sdf(tl, bl)
-            angle(tr - tl)
-        else
-            angle(bl - tl) + π/2
-        end
-    
+    θ = angle(br - bl)
     return Rect(tl, w, h, θ)
 end
 
@@ -50,7 +50,7 @@ function Rect(;tl::Union{Nothing, Point} = nothing,
         bl = br + (tl - tr)
     end
 
-    return Rect(tl, tr, bl)
+    return Rect(Segment(tr, bl), tl)
 end
 
 Base.convert(::Type{Rect{T}}, s::Rect) where T = Rect{T}(Point{T}(s.tl), T(s.w), T(s.h), s.θ)
@@ -66,10 +66,11 @@ function center(r::Rect)
     return 0.5(c.tl + c.br)
 end
 
-function corners(r::Rect, type=Float64)
+function corners(r::Rect, type::Type{T}=Float64) where T
     c = corners(AxisRect(Point(0,0), r.w, r.h))
-    d = translate.(rotate.((c.tl, c.tr, c.bl, c.br), r.θ), r.tl.x, r.tl.y) .|> Point{type}
-    return (tl=d[1], tr=d[2], bl=d[3], br=d[4])
+    a,b,e,f = rotate(c.tl, r.θ), rotate(c.tr, r.θ), rotate(c.bl, r.θ), rotate(c.br, r.θ)
+    d = a + r.tl, b + r.tl, e + r.tl, f + r.tl
+    return (tl=Point{T}(d[1]), tr=Point{T}(d[2]), bl=Point{T}(d[3]), br=Point{T}(d[4]))
 end
 
 function sides(r::Rect)
@@ -94,6 +95,9 @@ rotate(r::Rect, θ)         = Rect(rotate(r.tl, θ), r.w, r.h, mod2pi(r.θ + θ)
 translate(r::Rect, dx, dy) = Rect(r.tl + Point(dx, dy), r.w, r.h, r.θ)
 function scale(r::Rect, sx, sy)
     c = corners(r)
+    if sx < 0 <= sy || sy < 0 <= sx
+        return Quatrilateral(scale(c.tl, sx, sy), scale(c.bl, sx, sy), scale(c.br, sx, sy), scale(c.tr, sx, sy))
+    end
     return Quatrilateral(scale(c.tl, sx, sy), scale(c.tr, sx, sy), scale(c.br, sx, sy), scale(c.bl, sx, sy))
 end
 
