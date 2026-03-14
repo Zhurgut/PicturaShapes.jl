@@ -59,12 +59,12 @@ AxisRect{T}(a) where T = convert(AxisRect{T}, a)
 
 center(a::AxisRect) = Point(a.tl.x + 0.5*a.w, a.tl.y + 0.5*a.h)
 
-function corners(a::AxisRect{T}, type=T) where T
+function corners(a::AxisRect{A}, type::Type{T}=A) where {A, T}
     l, r, t, b = a.tl.x, a.tl.x + a.w, a.tl.y, a.tl.y + a.h
-    tl = Point{type}(l, t)
-    tr = Point{type}(r, t)
-    bl = Point{type}(l, b)
-    br = Point{type}(r, b)
+    tl = Point{T}(l, t)
+    tr = Point{T}(r, t)
+    bl = Point{T}(l, b)
+    br = Point{T}(r, b)
     return (tl=tl, tr=tr, bl=bl, br=br)
 end
 
@@ -122,8 +122,8 @@ end
 
 
 rotate(a::AxisRect, θ)         = Rect(rotate(a.tl, θ), a.w, a.h, θ)
-translate(a::AxisRect, dx, dy) = AxisRect(translate(a.tl, dx, dy), a.w, a.h)
-scale(a::AxisRect, sx, sy)     = AxisRect(scale(a.tl, sx, sy), sx * a.w, sy * a.h)
+translate(a::AxisRect, dx, dy) = AxisRect(translate(a.tl, dx, dy), a.w, a.h, mode=:corner)
+scale(a::AxisRect, sx, sy)     = AxisRect(scale(a.tl, sx, sy), sx * a.w, sy * a.h, mode=:corner)
 
 
 function simplify(a::AxisRect)
