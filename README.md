@@ -1,5 +1,3 @@
-# PShapes
+# PicturaShapes.jl
 
-A Package with 2D shapes
-
-move em, stretch em, intersect em, how far are they apart? what is their area?
+A small package with 2D geometry shapes. Move, scale and transform shapes like Points, Lines, Rectangles and Ellipses. 
