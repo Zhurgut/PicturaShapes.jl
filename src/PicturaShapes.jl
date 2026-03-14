@@ -11,7 +11,7 @@ export AbstractShape, AbstractPolygon, AbstractQuatrilateral, AbstractRect
 
 
 include("shapes/Point.jl")
-export Point, magnitude # LinearAlgebra.normalize
+export Point, magnitude, normalize
 
 include("shapes/Segment.jl")
 export Segment
