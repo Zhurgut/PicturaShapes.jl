@@ -54,6 +54,7 @@ end
 bounding_box(s, slack=0) = aligned_bounding_box(s, slack)
 
 function bounding_box(r::Rect, slack=0)
+    @assert r.w >= 0 && r.h >= 0
     a = rotate(r, -r.θ)
     return rotate(aligned_bounding_box(AxisRect(a.tl, a.w, a.h), slack), r.θ)
 end
